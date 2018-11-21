@@ -1,0 +1,12 @@
+Flask-JWT-Extended
+Flask-RESTful
+Flask-SQLAlchemy
+PyMySQL
+autopep8
+pycodestyle
+pandas
+numpy
+sklearn
+gensim
+nltk
+scipy

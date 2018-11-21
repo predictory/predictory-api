@@ -1,0 +1,12 @@
+# logs
+logs/*.log
+
+# editors config
+/.vscode
+/.idea
+
+# python
+*.pyc
+__pycache__/
+*.db
+venv/
