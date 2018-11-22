@@ -1,3 +1,4 @@
+from envparse import env
 from flask import Flask
 from flask_restful import Api
 
@@ -9,7 +10,15 @@ from resources.hybrid_recommendation import HybridRecommendation
 from resources.collector import Collector
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/recommender'
+
+db_user = env('DB_USER', default='root')
+db_password = env('DB_PASSWORD', default='')
+db_name = env('DB_NAME', default='recommender')
+db_host = env('DB_HOST', default='localhost')
+db_port = env('DB_PORT', default=3306)
+db_dialect = env('DB_DIALECT', default='mysql')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'{db_dialect}+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 app.config['SQLALCHEMY_ECHO'] = False
 api = Api(app)
 

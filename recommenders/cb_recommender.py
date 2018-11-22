@@ -38,4 +38,5 @@ class CBRecommender():
             'movieId': movie_id,
             'recommendations': [{i[0]: i[1]} for i in sim_scores]
         }
+
         return recommendations
