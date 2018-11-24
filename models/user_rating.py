@@ -1,5 +1,6 @@
 from db import db
 
+
 class UserRatingModel(db.Model):
     __tablename__ = 'users_ratings'
 
