@@ -10,3 +10,8 @@ logs/*.log
 __pycache__/
 *.db
 venv/
+
+# pre-trained files
+model
+model.*
+*.pickle

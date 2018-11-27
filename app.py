@@ -9,7 +9,10 @@ from resources.user_recommendation import UserRecommendation
 from resources.hybrid_recommendation import HybridRecommendation
 from resources.collector import Collector
 
+from cli.train import train_models
+
 app = Flask(__name__)
+
 
 db_user = env('DB_USER', default='root')
 db_password = env('DB_PASSWORD', default='')
@@ -21,6 +24,7 @@ db_dialect = env('DB_DIALECT', default='mysql')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'{db_dialect}+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 app.config['SQLALCHEMY_ECHO'] = False
 api = Api(app)
+db.init_app(app)
 
 api.add_resource(Movie, '/movies')
 api.add_resource(MovieRecommendation, '/movies/<int:id>/recommendations')
@@ -28,6 +32,11 @@ api.add_resource(UserRecommendation, '/users/<int:id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
 api.add_resource(Collector, '/collector/<int:id>')
 
+
+@app.cli.command()
+def train():
+    train_models()
+
+
 if __name__ == '__main__':
-    db.init_app(app)
     app.run(port=3002, debug=True)
