@@ -1,12 +1,33 @@
+from envparse import env
 from flask import Flask
+from flask_restful import Api
+
 from db import db
+from resources.movie import Movie
+from resources.movie_recommendation import MovieRecommendation
+from resources.user_recommendation import UserRecommendation
+from resources.hybrid_recommendation import HybridRecommendation
+from resources.collector import Collector
 
+app = Flask(__name__)
 
-class FlaskApp(Flask):
-    def __init__(self, *args, **kwargs):
-        super(FlaskApp, self).__init__(*args, **kwargs)
+db_user = env('DB_USER', default='root')
+db_password = env('DB_PASSWORD', default='')
+db_name = env('DB_NAME', default='recommender')
+db_host = env('DB_HOST', default='localhost')
+db_port = env('DB_PORT', default=3306)
+db_dialect = env('DB_DIALECT', default='mysql')
 
-    @staticmethod
-    def prepare_data():
-        db.create_all(bind='recommender')
-        # There will be data preparation
+app.config['SQLALCHEMY_DATABASE_URI'] = f'{db_dialect}+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+app.config['SQLALCHEMY_ECHO'] = False
+api = Api(app)
+
+api.add_resource(Movie, '/movies')
+api.add_resource(MovieRecommendation, '/movies/<int:id>/recommendations')
+api.add_resource(UserRecommendation, '/users/<int:id>/recommendations')
+api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
+api.add_resource(Collector, '/collector/<int:id>')
+
+if __name__ == '__main__':
+    db.init_app(app)
+    app.run(port=3002, debug=True)
