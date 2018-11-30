@@ -49,4 +49,6 @@ class SVDRecommender:
         print(f'Finished in: {end - start}')
 
         # return recommended movies
-        return [{str(index): float(row.rating)} for index, row in recommended_movies.iterrows()]
+        recommendations = [{str(index): float(row.rating)} for index, row in recommended_movies.iterrows()]
+        num_of_rated_items = len(user_rated_movies)
+        return num_of_rated_items, recommendations

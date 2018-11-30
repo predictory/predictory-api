@@ -10,9 +10,11 @@ class CBFRecommender:
     @staticmethod
     def svd(user, n):
         recommender = SVDRecommender()
-        recommendations = {
+        num_of_rated_items, recommendations = recommender.recommend(user, n)
+        result = {
             'userId': user,
-            'recommendations': recommender.recommend(user, n)
+            'ratedItemsCount': num_of_rated_items,
+            'recommendations': recommendations
         }
 
-        return recommendations
+        return result
