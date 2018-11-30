@@ -27,12 +27,14 @@ class SVDModel:
         data = pd.DataFrame(users_ratings)
         self.n_users = data['userId'].unique().shape[0]
         self.n_items = data['movieId'].unique().shape[0]
+        movies = data['movieId'].unique()
+        users = data['userId'].unique()
 
-        data_matrix = pd.DataFrame(np.zeros((self.n_users, self.n_items)), columns=data['movieId'].unique(), index=data['userId'].unique())
+        data_matrix = pd.DataFrame(np.zeros((self.n_users, self.n_items)), columns=movies, index=users)
         for line in data.itertuples():
             data_matrix.at[line.userId, line.movieId] = line.rating
 
-        return csr_matrix(data_matrix, dtype=np.float32)
+        return csr_matrix(data_matrix, dtype=np.float32), movies, users
 
     @staticmethod
     def _save_pickle_file(file_name, data):
@@ -42,14 +44,15 @@ class SVDModel:
         mapping_file.close()
 
     @staticmethod
-    def save(U, sigma, Vt, predicted_ratings):
+    def save(U, sigma, Vt, predicted_ratings, movies, users):
         if not os.path.exists('./models/SVD'):
             os.makedirs('./models/SVD')
 
         SVDModel._save_pickle_file('u', U)
         SVDModel._save_pickle_file('sigma', sigma)
         SVDModel._save_pickle_file('vt', Vt)
-        SVDModel._save_pickle_file('predicted_ratings', predicted_ratings)
+        ratings_df = pd.DataFrame(predicted_ratings, columns=movies, index=users)
+        SVDModel._save_pickle_file('predicted_ratings', ratings_df)
 
     @staticmethod
     def train(data, k):

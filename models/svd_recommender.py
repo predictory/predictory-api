@@ -27,20 +27,11 @@ class SVDRecommender:
         object_file = pickle.load(file)
         return object_file
 
-    def get_predicted_ratings(self):
-        users_ratings = marshal(UserRatingModel.query.all(), fields)
-        data = pd.DataFrame(users_ratings)
-        users_movies = data[['movieId', 'userId']]
-        ratings_df = pd.DataFrame(self.predicted_ratings, columns=data['movieId'].unique(),
-                                  index=data['userId'].unique())
-
-        return ratings_df, users_movies
-
     def recommend(self, user_id, n=10):
         start = time.time()
 
-        ratings_df, users_movies = self.get_predicted_ratings()
-        user_rated_movies = users_movies.loc[users_movies['userId'] == user_id]['movieId'].values
+        ratings_df = self.predicted_ratings
+        user_rated_movies = pd.DataFrame(marshal(UserRatingModel.query.filter_by(userId=user_id).all(), fields))['movieId'].values
         predicted_ratings = pd.DataFrame(ratings_df.loc[user_id])
         predicted_ratings.columns = ['rating']
         recommended_movies = predicted_ratings.drop(user_rated_movies).sort_values(['rating'], ascending=False).head(n)
