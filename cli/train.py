@@ -1,5 +1,6 @@
 from models.lda_model import LDAModel
 from models.svd_model import SVDModel
+from models.tfidf_model import TFIDFModel
 
 
 def train_models():
@@ -11,4 +12,7 @@ def train_models():
     data, movies, users = svd_model.load_data()
     U, sigma, Vt, predicted_ratings = svd_model.train(data, 90)
     svd_model.save(U, sigma, Vt, predicted_ratings, movies, users)
+    tfidf_model = TFIDFModel()
+    indices, similarities = tfidf_model.train()
+    tfidf_model.save(indices, similarities)
     print('Finished pre-training models...')

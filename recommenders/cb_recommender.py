@@ -1,24 +1,11 @@
-from flask_restful import fields, marshal
-from models.movie import MovieModel
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from models.lda_recommender import LDARecommender
-
-tf = TfidfVectorizer(analyzer='word', ngram_range=(1, 3),
-                     min_df=0, stop_words='english')
-
-movies_fields = {
-    'id': fields.Integer,
-    'title': fields.String,
-    'plot': fields.String
-}
+from models.tfidf_recommender import TFIDFRecommender
 
 
 class CBRecommender:
     @staticmethod
     def get_recommendations(movie_id):
-        recommendations = CBRecommender.lda(movie_id)
+        recommendations = CBRecommender.tf_idf(movie_id)
         return recommendations
 
     @staticmethod
@@ -28,4 +15,14 @@ class CBRecommender:
             'movieId': movie_id,
             'recommendations': recommender.recommend(movie_id)
         }
+        return recommendations
+
+    @staticmethod
+    def tf_idf(movie_id):
+        recommender = TFIDFRecommender()
+        recommendations = {
+            'movieId': movie_id,
+            'recommendations': recommender.recommend(movie_id)
+        }
+
         return recommendations
