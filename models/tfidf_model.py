@@ -31,10 +31,14 @@ class TFIDFModel:
 
     @staticmethod
     def train():
+        print('Start training TF-IDF model...')
+
         movies = MovieModel.query.all()
         data = pd.DataFrame(marshal(movies, fields))
         tfidf_matrix = tf.fit_transform(data['plot'])
         cosine_similarities = cosine_similarity(tfidf_matrix, tfidf_matrix)
         indices = pd.Series(data.index, index=data['id'])
+
+        print('Finished training TF-IDF model...')
 
         return indices, cosine_similarities
