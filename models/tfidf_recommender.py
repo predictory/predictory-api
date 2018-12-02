@@ -20,7 +20,7 @@ class TFIDFRecommender:
         sim_scores = list(enumerate(self.similarities[idx]))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
         sim_scores = sim_scores[1:int(n) + 1]
-        movie_indices = [{str(self.indices[self.indices == i[0]].index.tolist()[0]): i[1]} for i in sim_scores]
+        movie_indices = [{'id': int(self.indices[self.indices == i[0]].index.tolist()[0]), 'similarity': i[1]} for i in sim_scores]
 
         end = time.time()
         print(f'Finished in: {end - start}')
