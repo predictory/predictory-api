@@ -34,4 +34,7 @@ class LDARecommender:
 
         end = time.time()
         print(f'Recommended in: {end - start} s')
-        return [{'id': int(indices[index]), 'similarity': float(line)} for index, line in enumerate(similarities)]
+        return [{
+            'id': self.docs_topics.iloc[[indices[index]]].index.tolist()[0],
+            'similarity': float(line)
+        } for index, line in enumerate(similarities)]
