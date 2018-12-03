@@ -4,6 +4,7 @@ from sklearn.neighbors import NearestNeighbors
 import warnings
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 from gensim.models import LdaModel
+from utils.pandas_helper import PandasHelper
 
 
 class LDARecommender:
@@ -35,6 +36,6 @@ class LDARecommender:
         end = time.time()
         print(f'Recommended in: {end - start} s')
         return [{
-            'id': self.docs_topics.iloc[[indices[index]]].index.tolist()[0],
+            'id': PandasHelper.get_id_from_series(self.docs_topics.iloc[[indices[index]]]),
             'similarity': float(line)
         } for index, line in enumerate(similarities)]
