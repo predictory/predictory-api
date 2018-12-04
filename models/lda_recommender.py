@@ -26,8 +26,9 @@ class LDARecommender:
         model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
         model_knn.fit(self.docs_topics)
 
-        distances, indices = model_knn.kneighbors(self.docs_topics.iloc[movie_id, :].values.reshape(1, -1),
-                                                  n_neighbors=self.num_of_recommendation + 1)
+        # TODO: fix right index
+        movie_row = self.docs_topics[self.docs_topics.index == movie_id].values.reshape(1, -1)
+        distances, indices = model_knn.kneighbors(movie_row, n_neighbors=self.num_of_recommendation + 1)
         similarities = 1 - distances.flatten()
         similarities = similarities[1:]
         indices = indices.flatten()

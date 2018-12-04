@@ -27,15 +27,15 @@ movies_fields = {
 class LDAModel:
     def __init__(self):
         # Min length of document
-        self.min_length = 200
+        self.min_length = 100
         # Num_topics in LDA
-        self.num_topics = 90
+        self.num_topics = 30
         # Filter out tokens that appear in less than `no_below` documents (absolute number)
         self.no_below = 50
         # Filter out tokens that appear in more than `no_above` documents
         self.no_above = 0.2
         # Number of iterations in training LDA model
-        self.num_of_iterations = 1000
+        self.num_of_iterations = 100000
 
     @staticmethod
     def lemmatize_stemming(text):
