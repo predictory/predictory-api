@@ -27,8 +27,8 @@ api = Api(app)
 db.init_app(app)
 
 api.add_resource(Movie, '/movies')
-api.add_resource(MovieRecommendation, '/movies/<int:id>/recommendations')
-api.add_resource(UserRecommendation, '/users/<int:id>/recommendations')
+api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
+api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
 api.add_resource(Collector, '/collector/<int:id>')
 
