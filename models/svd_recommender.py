@@ -31,7 +31,12 @@ class SVDRecommender:
         start = time.time()
 
         ratings_df = self.predicted_ratings
-        user_rated_movies = pd.DataFrame(marshal(UserRatingModel.query.filter_by(userId=user_id).all(), fields))['movieId'].values
+        rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), fields)
+
+        if len(rated_movies) == 0:
+            return 0, None
+
+        user_rated_movies = pd.DataFrame(rated_movies)['movieId'].values
         predicted_ratings = pd.DataFrame(ratings_df.loc[user_id])
         predicted_ratings.columns = ['rating']
         recommended_movies = predicted_ratings.drop(user_rated_movies).sort_values(['rating'], ascending=False).head(n)
