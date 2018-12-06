@@ -27,8 +27,13 @@ class LDARecommender:
         model_knn.fit(self.docs_topics)
 
         # TODO: fix right index
-        movie_row = self.docs_topics[self.docs_topics.index == movie_id].values.reshape(1, -1)
-        distances, indices = model_knn.kneighbors(movie_row, n_neighbors=self.num_of_recommendation + 1)
+        movie_row = self.docs_topics[self.docs_topics.index == movie_id]
+
+        if movie_row.empty:
+            return None
+
+        row_values = movie_row.values.reshape(1, -1)
+        distances, indices = model_knn.kneighbors(row_values, n_neighbors=self.num_of_recommendation + 1)
         similarities = 1 - distances.flatten()
         similarities = similarities[1:]
         indices = indices.flatten()
