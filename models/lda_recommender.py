@@ -26,7 +26,6 @@ class LDARecommender:
         model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
         model_knn.fit(self.docs_topics)
 
-        # TODO: fix right index
         movie_row = self.docs_topics[self.docs_topics.index == movie_id]
 
         if movie_row.empty:

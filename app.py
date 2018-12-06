@@ -7,7 +7,7 @@ from resources.movie import Movie
 from resources.movie_recommendation import MovieRecommendation
 from resources.user_recommendation import UserRecommendation
 from resources.hybrid_recommendation import HybridRecommendation
-from resources.collector import Collector
+from resources.user_retrain import UserRetrain
 
 from cli.train import train_models
 
@@ -30,7 +30,7 @@ api.add_resource(Movie, '/movies')
 api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
 api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
-api.add_resource(Collector, '/collector/<int:id>')
+api.add_resource(UserRetrain, '/users/re-train')
 
 
 @app.cli.command()
