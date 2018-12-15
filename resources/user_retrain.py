@@ -9,7 +9,7 @@ class UserRetrain(Resource):
 
         svd_model = SVDModel()
         data, movies, users = svd_model.load_data()
-        U, sigma, Vt, predicted_ratings = svd_model.train(data, 90)
+        U, sigma, Vt, predicted_ratings = svd_model.train(data, 20)
         svd_model.save(U, sigma, Vt, predicted_ratings, movies, users)
 
         print('Finished pre-training user-based models...')
