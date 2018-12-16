@@ -8,6 +8,7 @@ from resources.movie_recommendation import MovieRecommendation
 from resources.user_recommendation import UserRecommendation
 from resources.hybrid_recommendation import HybridRecommendation
 from resources.user_retrain import UserRetrain
+from resources.movie_topics import MovieTopics
 
 from cli.train import train_models
 
@@ -31,6 +32,7 @@ api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
 api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
 api.add_resource(UserRetrain, '/users/re-train')
+api.add_resource(MovieTopics, '/movies/<int:movie_id>/topics')
 
 
 @app.cli.command()

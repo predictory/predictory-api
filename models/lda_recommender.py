@@ -26,13 +26,12 @@ class LDARecommender:
         model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
         model_knn.fit(self.docs_topics)
 
-        movie_row = self.docs_topics[self.docs_topics.index == movie_id]
+        movie_topics = self.get_movie_topics(movie_id)
 
-        if movie_row.empty:
+        if movie_topics is None:
             return None
 
-        row_values = movie_row.values.reshape(1, -1)
-        distances, indices = model_knn.kneighbors(row_values, n_neighbors=self.num_of_recommendation + 1)
+        distances, indices = model_knn.kneighbors(movie_topics, n_neighbors=self.num_of_recommendation + 1)
         similarities = 1 - distances.flatten()
         similarities = similarities[1:]
         indices = indices.flatten()
@@ -44,3 +43,13 @@ class LDARecommender:
             'id': PandasHelper.get_id_from_series(self.docs_topics.iloc[[indices[index]]]),
             'similarity': float(line)
         } for index, line in enumerate(similarities)]
+
+    def get_movie_topics(self, movie_id):
+        movie_row = self.docs_topics[self.docs_topics.index == movie_id]
+
+        if movie_row.empty:
+            return None
+
+        row_values = movie_row.values.reshape(1, -1)
+
+        return row_values
