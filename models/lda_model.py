@@ -29,11 +29,11 @@ class LDAModel:
         # Min length of document
         self.min_length = 100
         # Num_topics in LDA
-        self.num_topics = 5
+        self.num_topics = 30
         # Filter out tokens that appear in less than `no_below` documents (absolute number)
         self.no_below = 50
         # Filter out tokens that appear in more than `no_above` documents
-        self.no_above = 0.3
+        self.no_above = 0.2
         # Number of iterations in training LDA model
         self.num_of_iterations = 10000
 
