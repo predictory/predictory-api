@@ -11,7 +11,7 @@ class LDARecommender:
     def __init__(self):
         self.lda = LdaModel.load('./models/LDA/model')
         self.corpus = LDARecommender.load_pickle_file('./models/LDA/corpus')
-        self.docs_topics = LDARecommender.load_pickle_file('./models/LDA/docs_topics')
+        self.df = LDARecommender.load_pickle_file('./models/LDA/df')
         self.num_of_recommendation = 10
 
     @staticmethod
@@ -24,7 +24,7 @@ class LDARecommender:
         start = time.time()
 
         model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
-        model_knn.fit(self.docs_topics)
+        model_knn.fit(self.df)
 
         movie_topics = self.get_movie_topics(movie_id)
 
@@ -40,12 +40,12 @@ class LDARecommender:
         end = time.time()
         print(f'Recommended in: {end - start} s')
         return [{
-            'id': PandasHelper.get_id_from_series(self.docs_topics.iloc[[indices[index]]]),
+            'id': PandasHelper.get_id_from_series(self.df.iloc[[indices[index]]]),
             'similarity': float(line)
         } for index, line in enumerate(similarities)]
 
     def get_movie_topics(self, movie_id):
-        movie_row = self.docs_topics[self.docs_topics.index == movie_id]
+        movie_row = self.df[self.df.index == movie_id]
 
         if movie_row.empty:
             return None
