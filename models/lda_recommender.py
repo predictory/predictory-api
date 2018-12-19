@@ -26,7 +26,7 @@ class LDARecommender:
         model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
         model_knn.fit(self.df)
 
-        movie_topics = self.get_movie_topics(movie_id)
+        movie_topics = self.get_movie_row(movie_id)
 
         if movie_topics is None:
             return None
@@ -44,7 +44,7 @@ class LDARecommender:
             'similarity': float(line)
         } for index, line in enumerate(similarities)]
 
-    def get_movie_topics(self, movie_id):
+    def get_movie_row(self, movie_id):
         movie_row = self.df[self.df.index == movie_id]
 
         if movie_row.empty:

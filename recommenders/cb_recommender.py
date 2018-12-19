@@ -5,7 +5,7 @@ from models.tfidf_recommender import TFIDFRecommender
 class CBRecommender:
     @staticmethod
     def get_recommendations(movie_id):
-        recommendations = CBRecommender.lda(movie_id)
+        recommendations = CBRecommender.tf_idf(movie_id)
         return recommendations
 
     @staticmethod
