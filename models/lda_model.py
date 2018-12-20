@@ -14,6 +14,8 @@ warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 import gensim
 from gensim import models, parsing
 from gensim.models import LdaModel
+from utils.pandas_helper import PandasHelper
+from sklearn.neighbors import NearestNeighbors
 
 
 nltk.download('wordnet', quiet=True)
@@ -35,6 +37,7 @@ class LDAModel:
         self.num_of_iterations = 100
         self.passes = 3
         self.minimum_probability = 0.01
+        self.num_similarities = 30
 
     @staticmethod
     def lemmatize_stemming(text):
@@ -47,9 +50,6 @@ class LDAModel:
             if token not in parsing.preprocessing.STOPWORDS and len(token) > 3:
                 unigrams.append(LDAModel.lemmatize_stemming(token))
 
-        # bi_grams = ['_'.join(b) for b in nltk.bigrams(unigrams)]
-        # tri_grams = ['_'.join(t) for t in nltk.trigrams(unigrams)]
-
         return list(itertools.chain(unigrams))
 
     @staticmethod
@@ -60,14 +60,45 @@ class LDAModel:
         mapping_file.close()
 
     @staticmethod
-    def save_model(lda, corpus, df):
+    def save_model(lda, similarities):
         if not os.path.exists('./models/LDA'):
             os.makedirs('./models/LDA')
         # Save model output
         lda.save('./models/LDA/model')
-        # Save corpus
-        LDAModel.save_pickle_file('corpus', corpus)
-        LDAModel.save_pickle_file('df', df)
+        LDAModel.save_pickle_file('similarities', similarities)
+
+    def get_similarities(self, index, ids):
+        sims = []
+        coo = coo_matrix(index)
+        similarity_matrix = np.zeros(((len(ids)), len(ids)))
+
+        print('Started getting LDA similarities')
+        for i, j, v in zip(coo.row, coo.col, coo.data):
+            similarity_matrix[i, j] = 1 if v > 1 else v
+
+        model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
+        model_knn.fit(similarity_matrix)
+
+        df_similarity_matrix = pd.DataFrame(similarity_matrix, index=ids)
+        for i, row in df_similarity_matrix.iterrows():
+            movie_row = row.values.reshape(1, -1)
+
+            distances, indices = model_knn.kneighbors(movie_row, n_neighbors=self.num_similarities + 1)
+            similarities = 1 - distances.flatten()
+            similarities = similarities[1:]
+            indices = indices.flatten()
+            indices = indices[1:]
+
+            sims.append({
+                'id': i,
+                'similarities': [{
+                    'id': PandasHelper.get_id_from_series(df_similarity_matrix.iloc[[indices[index]]]),
+                    'similarity': float(line)
+                } for index, line in enumerate(similarities)]
+            })
+        print('Finished getting LDA similarities')
+
+        return sims
 
     def train_model(self):
         movies = MovieModel.query.all()
@@ -94,14 +125,6 @@ class LDAModel:
             minimum_probability=self.minimum_probability)
 
         index = gensim.similarities.MatrixSimilarity(corpus_tf_idf)
-        coo = coo_matrix(index)
-        similarity_matrix = np.zeros(((len(ids)), len(ids)))
-
-        for i, j, v in zip(coo.row, coo.col, coo.data):
-            similarity_matrix[i, j] = 1 if v > 1 else v
-
-        df_similarity_matrix = pd.DataFrame(similarity_matrix, index=ids, columns=ids)
-
         print('Finished training LDA model...')
 
-        return lda, corpus, df_similarity_matrix
+        return lda, index, ids

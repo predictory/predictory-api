@@ -9,5 +9,5 @@ class MovieTopics(Resource):
 
         return {
             'movieId': movie_id,
-            'topics': recommender.get_movie_topics(movie_id).tolist()
+            'topics': recommender.get_movie_topics(movie_id)
         }, 200
