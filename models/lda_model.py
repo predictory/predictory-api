@@ -60,11 +60,18 @@ class LDAModel:
         mapping_file.close()
 
     @staticmethod
-    def save_model(lda, similarities):
+    def save_model(lda, topics):
         if not os.path.exists('./models/LDA'):
             os.makedirs('./models/LDA')
         # Save model output
         lda.save('./models/LDA/model')
+        LDAModel.save_pickle_file('topics', topics)
+
+    @staticmethod
+    def save_similarities(similarities):
+        if not os.path.exists('./models/LDA'):
+            os.makedirs('./models/LDA')
+
         LDAModel.save_pickle_file('similarities', similarities)
 
     def get_similarities(self, index, ids):
@@ -100,6 +107,14 @@ class LDAModel:
 
         return sims
 
+    @staticmethod
+    def get_topics(lda, corpus, ids):
+        documents_topics = [lda.get_document_topics(item) for item in corpus]
+        topics = [[tup[1] for tup in lst] for lst in documents_topics]
+        df_topics = pd.DataFrame(topics, index=ids)
+
+        return df_topics
+
     def train_model(self):
         movies = MovieModel.query.all()
         data = pd.DataFrame(marshal(movies, movies_fields))
@@ -127,4 +142,4 @@ class LDAModel:
         index = gensim.similarities.MatrixSimilarity(corpus_tf_idf)
         print('Finished training LDA model...')
 
-        return lda, index, ids
+        return lda, corpus_tf_idf, index, ids

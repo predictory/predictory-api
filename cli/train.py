@@ -7,9 +7,11 @@ def train_models():
     print('Starting pre-training models...')
 
     lda_model = LDAModel()
-    lda, index, ids = lda_model.train_model()
+    lda, corpus, index, ids = lda_model.train_model()
+    topics = lda_model.get_topics(lda, corpus, ids)
     similarities = lda_model.get_similarities(index, ids)
-    lda_model.save_model(lda, similarities)  # save model for recommendations use
+    lda_model.save_model(lda, topics)
+    lda_model.save_similarities(similarities)  # save similarities for recommendations use
 
     svd_model = SVDModel()
     data, movies, users = svd_model.load_data()

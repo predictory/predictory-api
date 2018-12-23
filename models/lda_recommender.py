@@ -1,16 +1,15 @@
 import time
 import pickle
 import warnings
-from sklearn.neighbors import NearestNeighbors
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 from gensim.models import LdaModel
-from utils.pandas_helper import PandasHelper
 
 
 class LDARecommender:
     def __init__(self):
         self.lda = LdaModel.load('./models/LDA/model')
         self.similarities = LDARecommender.load_pickle_file('./models/LDA/similarities')
+        self.topics = self.load_pickle_file('./models/LDA/topics')
         self.num_of_recommendation = 10
 
     @staticmethod
@@ -31,3 +30,11 @@ class LDARecommender:
             return None
 
         return sims[0]['similarities'][:self.num_of_recommendation]
+
+    def get_movie_topics(self, movie_id):
+        movie_topics = self.topics[self.topics.index == movie_id]
+
+        if movie_topics.empty:
+            return None
+
+        return movie_topics.values.tolist()
