@@ -9,15 +9,7 @@ from mongo import mongo
 class LDARecommender:
     def __init__(self):
         self.lda = LdaModel.load('./models/LDA/model')
-        self.similarities = LDARecommender.load_pickle_file('./models/LDA/similarities')
-        self.topics = self.load_pickle_file('./models/LDA/topics')
         self.num_of_recommendation = 10
-
-    @staticmethod
-    def load_pickle_file(file_name):
-        file = open(f'{file_name}.pickle', 'rb')
-        object_file = pickle.load(file)
-        return object_file
 
     def recommend(self, movie_id):
         start = time.time()
