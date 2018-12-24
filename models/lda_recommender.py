@@ -3,6 +3,7 @@ import pickle
 import warnings
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 from gensim.models import LdaModel
+from mongo import mongo
 
 
 class LDARecommender:
@@ -21,20 +22,22 @@ class LDARecommender:
     def recommend(self, movie_id):
         start = time.time()
 
-        sims = list(filter(lambda similarity: similarity['id'] == movie_id, self.similarities))
+        mongo_similarities = mongo.db.similarities
+        similarities = mongo_similarities.find_one({'id': movie_id})
 
         end = time.time()
         print(f'Recommended in: {end - start} s')
 
-        if len(sims) == 0:
+        if similarities is None:
             return None
 
-        return sims[0]['similarities'][:self.num_of_recommendation]
+        return similarities['similarities'][:self.num_of_recommendation]
 
     def get_movie_topics(self, movie_id):
-        movie_topics = self.topics[self.topics.index == movie_id]
+        mongo_topics = mongo.db.topics
+        movie_topics = mongo_topics.find_one({'id': movie_id})
 
-        if movie_topics.empty:
+        if movie_topics is None:
             return None
 
-        return movie_topics.values.tolist()
+        return movie_topics['topics']

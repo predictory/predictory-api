@@ -10,7 +10,9 @@ def train_models():
     lda, corpus, index, ids = lda_model.train_model()
     topics = lda_model.get_topics(lda, corpus, ids)
     similarities = lda_model.get_similarities(index, ids)
-    lda_model.save_model(lda, topics)
+
+    lda_model.save_model(lda)
+    lda_model.save_topics(topics)
     lda_model.save_similarities(similarities)  # save similarities for recommendations use
 
     svd_model = SVDModel()

@@ -16,6 +16,7 @@ from gensim import models, parsing
 from gensim.models import LdaModel
 from utils.pandas_helper import PandasHelper
 from sklearn.neighbors import NearestNeighbors
+from mongo import mongo
 
 
 nltk.download('wordnet', quiet=True)
@@ -60,19 +61,32 @@ class LDAModel:
         mapping_file.close()
 
     @staticmethod
-    def save_model(lda, topics):
+    def save_model(lda):
         if not os.path.exists('./models/LDA'):
             os.makedirs('./models/LDA')
         # Save model output
         lda.save('./models/LDA/model')
-        LDAModel.save_pickle_file('topics', topics)
+
+    @staticmethod
+    def save_topics(topics):
+        mongo_topics = mongo.db.topics
+        mongo_topics.delete_many({})
+
+        for index, row in topics.iterrows():
+            topic = {
+                'id': index,
+                'topics': row.values.tolist()
+            }
+
+            mongo_topics.insert_one(topic)
 
     @staticmethod
     def save_similarities(similarities):
-        if not os.path.exists('./models/LDA'):
-            os.makedirs('./models/LDA')
+        mongo_similarities = mongo.db.similarities
+        mongo_similarities.delete_many({})
 
-        LDAModel.save_pickle_file('similarities', similarities)
+        for row in similarities:
+            mongo_similarities.insert_one(row)
 
     def get_similarities(self, index, ids):
         sims = []
@@ -103,6 +117,8 @@ class LDAModel:
                     'similarity': float(line)
                 } for index, line in enumerate(similarities)]
             })
+            print(f'Created similarities for {i}')
+
         print('Finished getting LDA similarities')
 
         return sims
