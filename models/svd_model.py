@@ -46,15 +46,13 @@ class SVDModel:
         mapping_file.close()
 
     @staticmethod
-    def save(U, sigma, Vt, predicted_ratings, movies, users):
+    def save(U, sigma, Vt):
         if not os.path.exists('./models/SVD'):
             os.makedirs('./models/SVD')
 
         SVDModel._save_pickle_file('u', U)
         SVDModel._save_pickle_file('sigma', sigma)
         SVDModel._save_pickle_file('vt', Vt)
-        ratings_df = pd.DataFrame(predicted_ratings, columns=movies, index=users)
-        SVDModel.save_ratings(ratings_df)
 
     @staticmethod
     def save_ratings(ratings_df):
@@ -62,16 +60,16 @@ class SVDModel:
         mongo_ratings.delete_many({})
 
         for index, row in ratings_df.iterrows():
-            ratings = json.dumps(row.to_dict())
-            SVDModel.save_rating(index, json.loads(ratings))
+            SVDModel.save_rating(index, row.to_dict())
 
     @staticmethod
     def save_rating(id, ratings):
         mongo_ratings = mongo.db.users_ratings
+        ratings = json.dumps(ratings)
 
         ratings_row = {
             'id': id,
-            'ratings': ratings
+            'ratings': json.loads(ratings)
         }
 
         mongo_ratings.insert_one(ratings_row)

@@ -34,7 +34,7 @@ api.add_resource(Movie, '/movies')
 api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
 api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
-api.add_resource(UserRetrain, '/users/re-train')
+api.add_resource(UserRetrain, '/users/re-train/<int:user_id>')
 api.add_resource(MovieTopics, '/movies/<int:movie_id>/topics')
 
 
