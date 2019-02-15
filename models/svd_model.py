@@ -63,12 +63,13 @@ class SVDModel:
             SVDModel.save_rating(index, row.to_dict())
 
     @staticmethod
-    def save_rating(id, ratings):
+    def save_rating(user_id, ratings):
         mongo_ratings = mongo.db.users_ratings
+        mongo_ratings.delete_many({'id': int(user_id)})
         ratings = json.dumps(ratings)
 
         ratings_row = {
-            'id': id,
+            'id': user_id,
             'ratings': json.loads(ratings)
         }
 
