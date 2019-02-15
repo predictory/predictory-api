@@ -5,6 +5,8 @@ import pandas as pd
 import pickle
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
+import json
+from mongo import mongo
 
 from models.user_rating import UserRatingModel
 
@@ -52,7 +54,27 @@ class SVDModel:
         SVDModel._save_pickle_file('sigma', sigma)
         SVDModel._save_pickle_file('vt', Vt)
         ratings_df = pd.DataFrame(predicted_ratings, columns=movies, index=users)
-        SVDModel._save_pickle_file('predicted_ratings', ratings_df)
+        SVDModel.save_ratings(ratings_df)
+
+    @staticmethod
+    def save_ratings(ratings_df):
+        mongo_ratings = mongo.db.users_ratings
+        mongo_ratings.delete_many({})
+
+        for index, row in ratings_df.iterrows():
+            ratings = json.dumps(row.to_dict())
+            SVDModel.save_rating(index, json.loads(ratings))
+
+    @staticmethod
+    def save_rating(id, ratings):
+        mongo_ratings = mongo.db.users_ratings
+
+        ratings_row = {
+            'id': id,
+            'ratings': ratings
+        }
+
+        mongo_ratings.insert_one(ratings_row)
 
     @staticmethod
     def train(data, k):
