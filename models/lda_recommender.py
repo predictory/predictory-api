@@ -9,9 +9,8 @@ from mongo import mongo
 class LDARecommender:
     def __init__(self):
         self.lda = LdaModel.load('./models/LDA/model')
-        self.num_of_recommendation = 10
 
-    def recommend(self, movie_id):
+    def recommend(self, movie_id, k=10):
         start = time.time()
 
         mongo_similarities = mongo.db.similarities
@@ -23,7 +22,7 @@ class LDARecommender:
         if similarities is None:
             return None
 
-        return similarities['similarities'][:self.num_of_recommendation]
+        return similarities['similarities'][:k]
 
     def get_movie_topics(self, movie_id):
         mongo_topics = mongo.db.topics

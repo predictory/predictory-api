@@ -27,7 +27,7 @@ class SVDRecommender:
         object_file = pickle.load(file)
         return object_file
 
-    def recommend(self, user_id, n=10):
+    def recommend(self, user_id, k=10):
         start = time.time()
 
         mongo_ratings = mongo.db.users_ratings
@@ -40,7 +40,7 @@ class SVDRecommender:
         user_row = mongo_ratings.find_one({'id': user_id})
         user_ratings = pd.DataFrame(user_row['ratings'], index=[user_id]).T
         user_ratings.columns = ['rating']
-        recommended_movies = user_ratings.drop(user_rated_movies).sort_values(['rating'], ascending=False).head(n)
+        recommended_movies = user_ratings.drop(user_rated_movies).sort_values(['rating'], ascending=False).head(k)
 
         end = time.time()
         print(f'Finished in: {end - start}')
