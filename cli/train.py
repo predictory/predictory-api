@@ -5,7 +5,7 @@ from models.tfidf_model import TFIDFModel
 
 
 def train_models():
-    print('Starting pre-training models...')
+    print('Started pre-training models...')
 
     '''
     lda_model = LDAModel()
@@ -25,10 +25,8 @@ def train_models():
     svd_model.save(U, sigma, Vt)
     SVDModel.save_ratings(ratings_df)
 
-    '''
     tfidf_model = TFIDFModel()
     indices, similarities = tfidf_model.train()
-    tfidf_model.save(indices, similarities)
-    '''
+    tfidf_model.save_similarities(similarities, indices)
 
     print('Finished pre-training models...')

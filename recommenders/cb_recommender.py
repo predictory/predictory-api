@@ -5,7 +5,7 @@ from models.tfidf_recommender import TFIDFRecommender
 class CBRecommender:
     @staticmethod
     def get_recommendations(movie_id, k=10):
-        recommendations = CBRecommender.lda(movie_id, k)
+        recommendations = CBRecommender.tf_idf(movie_id, k)
         return recommendations
 
     @staticmethod
@@ -18,11 +18,11 @@ class CBRecommender:
         return recommendations
 
     @staticmethod
-    def tf_idf(movie_id):
+    def tf_idf(movie_id, k=10):
         recommender = TFIDFRecommender()
         recommendations = {
             'movieId': movie_id,
-            'recommendations': recommender.recommend(movie_id)
+            'recommendations': recommender.recommend(movie_id, k)
         }
 
         return recommendations
