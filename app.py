@@ -7,6 +7,7 @@ from mongo import mongo
 from resources.movie import Movie
 from resources.movie_recommendation import MovieRecommendation
 from resources.user_recommendation import UserRecommendation
+from resources.user_recommendation_by_genre import UserRecommendationByGenre
 from resources.hybrid_recommendation import HybridRecommendation
 from resources.user_retrain import UserRetrain
 # from resources.movie_topics import MovieTopics
@@ -33,6 +34,7 @@ mongo.init_app(app)
 api.add_resource(Movie, '/movies')
 api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
 api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
+api.add_resource(UserRecommendationByGenre, '/users/<int:user_id>/<int:genre_id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
 api.add_resource(UserRetrain, '/users/re-train/<int:user_id>')
 # api.add_resource(MovieTopics, '/movies/<int:movie_id>/topics')
