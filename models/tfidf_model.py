@@ -1,6 +1,5 @@
 import os
 from flask_restful import fields, marshal
-import pickle
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity

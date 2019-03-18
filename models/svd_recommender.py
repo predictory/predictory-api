@@ -1,6 +1,5 @@
 import time
 import pandas as pd
-import pickle
 from flask_restful import fields, marshal
 from mongo import mongo
 
@@ -16,17 +15,6 @@ fields = {
 
 
 class SVDRecommender:
-    def __init__(self):
-        self.U = SVDRecommender.load_pickle_file('./models/SVD/u')
-        self.sigma = SVDRecommender.load_pickle_file('./models/SVD/sigma')
-        self.Vt = SVDRecommender.load_pickle_file('./models/SVD/vt')
-
-    @staticmethod
-    def load_pickle_file(file_name):
-        file = open(f'{file_name}.pickle', 'rb')
-        object_file = pickle.load(file)
-        return object_file
-
     def recommend(self, user_id, k=10):
         start = time.time()
 
@@ -38,14 +26,21 @@ class SVDRecommender:
 
         user_rated_movies = list(map(str, pd.DataFrame(rated_movies)['movieId'].values))
         user_row = mongo_ratings.find_one({'id': user_id})
-        user_ratings = pd.DataFrame(user_row['ratings'], index=[user_id]).T
-        user_ratings.columns = ['rating']
-        recommended_movies = user_ratings.drop(user_rated_movies).sort_values(['rating'], ascending=False).head(k)
+        user_row = user_row['ratings']
+
+        for rated_movie in user_rated_movies:
+            try:
+                del user_row[rated_movie]
+            except:
+                print('Movie not found')
+
+        ratings = sorted(user_row.items(), reverse=True, key=lambda kv: kv[1])
+        recommended_movies = dict(ratings[:k])
+        recommendations = [{'id': key, 'rating': float(value)} for key, value in recommended_movies.items()]
 
         end = time.time()
         print(f'Finished in: {end - start}')
 
         # return recommended movies
-        recommendations = [{'id': index, 'rating': float(row.rating)} for index, row in recommended_movies.iterrows()]
         num_of_rated_items = len(user_rated_movies)
         return num_of_rated_items, recommendations
