@@ -76,7 +76,7 @@ class SVDRecommender:
             except:
                 print('Movie not found')
 
-        user_row = dict((k, v) for k, v in user_row.items() if int(k) in genre_movies)
+        user_row = dict((k, user_row[str(k)]) for k in genre_movies if str(k) in user_row)
         ratings = sorted(user_row.items(), reverse=True, key=lambda kv: kv[1])
         recommended_movies = dict(ratings[:k])
         recommendations = [{'id': key, 'rating': float(value)} for key, value in recommended_movies.items()]
