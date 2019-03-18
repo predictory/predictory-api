@@ -1,5 +1,6 @@
 from db import db
 
+
 class RatingModel(db.Model):
     __tablename__ = 'ratings'
 

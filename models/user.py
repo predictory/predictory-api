@@ -2,6 +2,7 @@ from db import db
 
 from models.user_rating import UserRatingModel
 
+
 class UserModel(db.Model):
     __tablename__ = 'users'
 
@@ -11,4 +12,5 @@ class UserModel(db.Model):
     email = db.Column(db.string(100))
     password = db.Column(db.string(100))
     admin = db.Column(db.Boolean)
-    ratings = db.relationship('UserRatingModel', backref='user', lazy=True)
+    ratings = db.relationship('UserRatingModel', lazy='subquery',
+                              backref=db.backref('users_ratings', lazy=True))

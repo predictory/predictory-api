@@ -20,6 +20,7 @@ movies_fields = {
     'ratings': fields.List(fields.Nested(ratings_fields))
 }
 
+
 class Movie(Resource):
     @marshal_with(movies_fields)
     def get(self):
