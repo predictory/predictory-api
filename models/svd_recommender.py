@@ -22,7 +22,7 @@ class SVDRecommender:
         start = time.time()
 
         mongo_ratings = mongo.db.users_ratings
-        rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), fields)
+        rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), rating_fields)
 
         if len(rated_movies) == 0:
             return 0, None
