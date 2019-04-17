@@ -8,6 +8,7 @@ from sqlalchemy import func
 from models.user_rating import UserRatingModel
 from models.movie import MovieModel
 from models.genre import GenreModel
+from utils.recommendations_helper import RecommendationsHelper
 
 rating_fields = {
     'id': fields.Integer,
@@ -20,41 +21,28 @@ rating_fields = {
 
 class SVDRecommender:
     @staticmethod
-    def recommend(user_id, take=10, skip=0):
+    def recommend(user_id):
         start = time.time()
 
-        mongo_ratings = mongo.db.users_ratings
         rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), rating_fields)
 
         if len(rated_movies) == 0:
             return 0, None
 
-        user_rated_movies = list(map(str, pd.DataFrame(rated_movies)['movieId'].values))
-        user_row = mongo_ratings.find_one({'id': user_id})
-        user_row = user_row['ratings']
-
-        for rated_movie in user_rated_movies:
-            try:
-                del user_row[rated_movie]
-            except:
-                print('Movie not found')
+        user_row = RecommendationsHelper.get_user_movies(rated_movies, user_id)
 
         ratings = sorted(user_row.items(), reverse=True, key=lambda kv: kv[1])
-        recommended_movies = dict(ratings[skip:take])
-        recommendations = [{'id': key, 'rating': float(value)} for key, value in recommended_movies.items()]
 
         end = time.time()
         print(f'Finished in: {end - start}')
 
         # return recommended movies
-        num_of_rated_items = len(user_rated_movies)
-        return num_of_rated_items, recommendations
+        return len(rated_movies), len(ratings), ratings
 
     @staticmethod
-    def recommend_by_genre(user_id, genres_ids, movie_type=None, take=10, skip=0):
+    def recommend_by_genre(user_id, genres_ids, movie_type=None):
         start = time.time()
 
-        mongo_ratings = mongo.db.users_ratings
         rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), rating_fields)
         genre_movies = db.session.query(MovieModel.id).join(MovieModel.genres)
 
@@ -68,30 +56,18 @@ class SVDRecommender:
         if len(rated_movies) == 0:
             return 0, None
 
-        num_of_rated_items = len(rated_movies)
-
         if len(genre_movies) == 0:
-            return num_of_rated_items, None
+            return len(rated_movies), None
 
         genre_movies = [movie[0] for movie in genre_movies]
 
-        user_rated_movies = list(map(str, pd.DataFrame(rated_movies)['movieId'].values))
-        user_row = mongo_ratings.find_one({'id': user_id})
-        user_row = user_row['ratings']
-
-        for movie in user_rated_movies:
-            try:
-                del user_row[movie]
-            except:
-                print('Movie not found')
+        user_row = RecommendationsHelper.get_user_movies(rated_movies, user_id)
 
         user_row = dict((k, user_row[str(k)]) for k in genre_movies if str(k) in user_row)
         ratings = sorted(user_row.items(), reverse=True, key=lambda kv: kv[1])
-        recommended_movies = dict(ratings[skip:take])
-        recommendations = [{'id': key, 'rating': float(value)} for key, value in recommended_movies.items()]
 
         end = time.time()
         print(f'Finished in: {end - start}')
 
         # return recommended movies
-        return num_of_rated_items, len(ratings), recommendations
+        return len(rated_movies), len(ratings), ratings
