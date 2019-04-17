@@ -94,4 +94,4 @@ class SVDRecommender:
         print(f'Finished in: {end - start}')
 
         # return recommended movies
-        return num_of_rated_items, recommendations
+        return num_of_rated_items, len(ratings), recommendations

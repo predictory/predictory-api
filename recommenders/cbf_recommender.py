@@ -13,12 +13,13 @@ class CBFRecommender:
 
         if genres is not None:
             genres_ids = genres.split(',')
-            num_of_rated_items, recommendations = recommender.recommend_by_genre(user_id, genres_ids, movie_type, take, skip)
+            num_of_rated_items, num_of_ratings, recommendations = recommender.recommend_by_genre(user_id, genres_ids, movie_type, take, skip)
 
             recommendations = {
                 'userId': user_id,
                 'genresIds': genres_ids,
                 'ratedItemsCount': num_of_rated_items,
+                'ratingsCount': num_of_ratings,
                 'recommendations': recommendations
             }
         else:
