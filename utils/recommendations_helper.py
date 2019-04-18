@@ -13,12 +13,16 @@ class RecommendationsHelper:
         return [{'id': key, 'rating': float(value)} for key, value in ratings.items()]
 
     @staticmethod
-    def get_user_movies(rated_movies, user_id):
+    def get_user_row(user_id):
         mongo_ratings = mongo.db.users_ratings
 
-        user_rated_movies = list(map(str, pd.DataFrame(rated_movies)['movieId'].values))
         user_row = mongo_ratings.find_one({'id': user_id})
-        user_row = user_row['ratings']
+        return user_row['ratings']
+
+    @staticmethod
+    def get_user_movies(rated_movies, user_id):
+        user_rated_movies = list(map(str, pd.DataFrame(rated_movies)['movieId'].values))
+        user_row = RecommendationsHelper.get_user_row(user_id)
 
         for movie in user_rated_movies:
             try:
