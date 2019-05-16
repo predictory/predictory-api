@@ -10,8 +10,15 @@ class Search(Resource):
         movie_type = request.args.get('type')
         take = request.args.get('take', 10, int)
         skip = request.args.get('skip', 0, int)
+        include_rated = request.args.get('includeRated')
+        include_rated = True if include_rated == 'true' else False
 
-        recommendations = CBFRecommender.get_recommendations_for_search(user_id, take, skip, genres, movie_type)
+        recommendations = CBFRecommender.get_recommendations_for_search(user_id,
+                                                                        take,
+                                                                        skip,
+                                                                        genres,
+                                                                        movie_type,
+                                                                        include_rated)
         return recommendations, 200
 
     @staticmethod

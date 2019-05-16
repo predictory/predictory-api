@@ -40,7 +40,7 @@ class SVDRecommender:
         return len(rated_movies), len(ratings), ratings
 
     @staticmethod
-    def recommend_by_genre(user_id, genres_ids, movie_type=None):
+    def recommend_by_genre(user_id, genres_ids, movie_type=None, include_rated=False):
         start = time.time()
 
         rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), rating_fields)
@@ -61,7 +61,7 @@ class SVDRecommender:
 
         genre_movies = [movie[0] for movie in genre_movies]
 
-        user_row = RecommendationsHelper.get_user_movies(rated_movies, user_id)
+        user_row = RecommendationsHelper.get_user_movies(rated_movies, user_id, include_rated)
 
         user_row = dict((k, user_row[str(k)]) for k in genre_movies if str(k) in user_row)
         ratings = sorted(user_row.items(), reverse=True, key=lambda kv: kv[1])

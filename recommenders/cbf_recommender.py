@@ -26,12 +26,14 @@ class CBFRecommender:
         return recommendations
 
     @staticmethod
-    def get_recommendations_for_search(user_id, take, skip, genres, movie_type=None):
+    def get_recommendations_for_search(user_id, take, skip, genres, movie_type=None, include_rated=False):
         recommender = SVDRecommender()
 
         genres_ids = genres.split(',')
-        num_of_rated_items, num_of_ratings, ratings = recommender.recommend_by_genre(user_id, genres_ids,
-                                                                                     movie_type)
+        num_of_rated_items, num_of_ratings, ratings = recommender.recommend_by_genre(user_id,
+                                                                                     genres_ids,
+                                                                                     movie_type,
+                                                                                     include_rated)
         recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip)
 
         recommendations = {

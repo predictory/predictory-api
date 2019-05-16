@@ -20,15 +20,16 @@ class RecommendationsHelper:
         return user_row['ratings']
 
     @staticmethod
-    def get_user_movies(rated_movies, user_id):
+    def get_user_movies(rated_movies, user_id, include_rated=False):
         user_rated_movies = list(map(str, pd.DataFrame(rated_movies)['movieId'].values))
         user_row = RecommendationsHelper.get_user_row(user_id)
 
-        for movie in user_rated_movies:
-            try:
-                del user_row[movie]
-            except:
-                print('Movie not found')
+        if not include_rated:
+            for movie in user_rated_movies:
+                try:
+                    del user_row[movie]
+                except:
+                    print('Movie not found')
 
         return user_row
 
