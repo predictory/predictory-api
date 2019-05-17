@@ -1,5 +1,7 @@
 import pandas as pd
 from mongo import mongo
+from db import db
+from models.user_rating import UserRatingModel
 
 
 class RecommendationsHelper:
@@ -28,6 +30,13 @@ class RecommendationsHelper:
             for movie in user_rated_movies:
                 try:
                     del user_row[movie]
+                except:
+                    print('Movie not found')
+        else:
+            penalized_movies = db.session.query(UserRatingModel).filter_by(userId=user_id, rating=0).all()
+            for movie in penalized_movies:
+                try:
+                    del user_row[str(movie.movieId)]
                 except:
                     print('Movie not found')
 
