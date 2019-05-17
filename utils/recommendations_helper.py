@@ -1,7 +1,4 @@
-import pandas as pd
 from mongo import mongo
-from db import db
-from models.user_rating import UserRatingModel
 
 
 class RecommendationsHelper:
@@ -23,20 +20,19 @@ class RecommendationsHelper:
 
     @staticmethod
     def get_user_movies(rated_movies, user_id, include_rated=False):
-        user_rated_movies = list(map(str, pd.DataFrame(rated_movies)['movieId'].values))
         user_row = RecommendationsHelper.get_user_row(user_id)
 
         if not include_rated:
-            for movie in user_rated_movies:
+            for movie in rated_movies:
                 try:
-                    del user_row[movie]
+                    del user_row[str(movie['movieId'])]
                 except:
                     print('Movie not found')
         else:
-            penalized_movies = db.session.query(UserRatingModel).filter_by(userId=user_id, rating=0).all()
+            penalized_movies = list(filter(lambda movie: movie['rating'] == 0, rated_movies))
             for movie in penalized_movies:
                 try:
-                    del user_row[str(movie.movieId)]
+                    del user_row[str(movie['movieId'])]
                 except:
                     print('Movie not found')
 
