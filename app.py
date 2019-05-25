@@ -9,6 +9,7 @@ from resources.movie_recommendation import MovieRecommendation
 from resources.user_recommendation import UserRecommendation
 from resources.hybrid_recommendation import HybridRecommendation
 from resources.user_retrain import UserRetrain
+from resources.retrain import Retrain
 from resources.search import Search
 # from resources.movie_topics import MovieTopics
 
@@ -35,7 +36,8 @@ api.add_resource(Movie, '/movies')
 api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
 api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
-api.add_resource(UserRetrain, '/users/re-train/<int:user_id>')
+api.add_resource(UserRetrain, '/train/users/<int:user_id>')
+api.add_resource(Retrain, '/train')
 api.add_resource(Search, '/search/<int:user_id>')
 # api.add_resource(MovieTopics, '/movies/<int:movie_id>/topics')
 

@@ -1,7 +1,5 @@
 import time
-import pandas as pd
 from flask_restful import fields, marshal
-from mongo import mongo
 from db import db
 from sqlalchemy import func
 

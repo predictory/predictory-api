@@ -7,6 +7,7 @@ from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
 import json
 from mongo import mongo
+from db import db
 
 from models.user_rating import UserRatingModel
 
@@ -25,7 +26,8 @@ class SVDModel:
         self.n_items = 0
 
     def load_data(self):
-        users_ratings = marshal(UserRatingModel.query.all(), fields)
+        users_ratings = db.session.query(UserRatingModel).all()
+        users_ratings = [row.__dict__ for row in users_ratings]
         data = pd.DataFrame(users_ratings)
         self.n_users = data['userId'].unique().shape[0]
         self.n_items = data['movieId'].unique().shape[0]
