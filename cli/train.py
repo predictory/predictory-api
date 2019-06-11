@@ -22,6 +22,9 @@ def train_tf_idf():
     print('Saving TF-IDF model')
     tfidf_model.save_similarities(similarities, indices)
 
+    print('Saving TF-IDF similarities distribution')
+    tfidf_model.save_distributions(similarities)
+
 
 def train_lda():
     lda_model = LDAModel()

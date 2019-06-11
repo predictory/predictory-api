@@ -11,6 +11,7 @@ from resources.hybrid_recommendation import HybridRecommendation
 from resources.user_retrain import UserRetrain
 from resources.retrain import Retrain
 from resources.search import Search
+from resources.similarity_distribution import SimilarityDistribution
 # from resources.movie_topics import MovieTopics
 
 from cli.train import train_models
@@ -33,6 +34,7 @@ db.init_app(app)
 mongo.init_app(app)
 
 api.add_resource(Movie, '/movies')
+api.add_resource(SimilarityDistribution, '/movies/similarities-distribution')
 api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
 api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
 api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
