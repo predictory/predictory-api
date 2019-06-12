@@ -65,9 +65,10 @@ class TFIDFModel:
         mongo_distributions = mongo.db.similarities_distribution
         mongo_distributions.delete_many({})
         merged = list(itertools.chain(*similarities))
+        merged = [value for value in merged if value != 0 and value < 1]
         merged.sort()
         counted = np.array(np.unique(merged, return_counts=True)).T
-        n = 1000
+        n = 100
         k, m = divmod(len(counted), n)
         divided_values = list(counted[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n))
         for row in divided_values:
