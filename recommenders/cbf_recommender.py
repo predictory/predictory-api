@@ -14,7 +14,7 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id)
 
-        recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip)
+        recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip, user_id, genres)
 
         recommendations = {
             'userId': user_id,
@@ -34,7 +34,7 @@ class CBFRecommender:
                                                                                      genres_ids,
                                                                                      movie_type,
                                                                                      include_rated)
-        recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip)
+        recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip, user_id, genres)
 
         recommendations = {
             'userId': user_id,

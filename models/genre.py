@@ -1,5 +1,6 @@
 from db import db
 
+
 class GenreModel(db.Model):
     __tablename__ = 'genres'
 

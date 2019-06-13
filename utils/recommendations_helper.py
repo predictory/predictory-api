@@ -1,5 +1,8 @@
 from mongo import mongo
 from db import db
+from sqlalchemy import func
+from models.movie import MovieModel
+from models.genre import GenreModel
 from models.user_rating import UserRatingModel
 
 
@@ -10,8 +13,46 @@ class RecommendationsHelper:
         return dict(ratings[skip:skip + take])
 
     @staticmethod
-    def get_id_rating_pairs(ratings):
-        return [{'id': key, 'rating': float(value)} for key, value in ratings.items()]
+    def get_similarity_values(user_id, ratings, genres):
+        mongo_similarities = mongo.db.tfidf_similarities
+        rated_movies = RecommendationsHelper.get_user_rated_movies(user_id)
+        rated_movies = [item['movieId'] for item in rated_movies]
+        movies_similarities = dict()
+
+        if genres is not None:
+            genres_ids = genres.split(',')
+            movies = db.session.query(MovieModel.id) \
+                .join(MovieModel.genres)\
+                .filter(MovieModel.id.in_(rated_movies)) \
+                .filter(GenreModel.id.in_(genres_ids)) \
+                .group_by(MovieModel.id) \
+                .having(func.count(GenreModel.id) == len(genres_ids))\
+                .all()
+
+            rated_movies = [movie[0] for movie in movies]
+
+        for key, value in ratings.items():
+            similarities = mongo_similarities.find_one({'id': int(key)})
+            similarities = similarities['similarities']
+            similar_items = [item for item in similarities if item['id'] in rated_movies]
+            similarity = None
+            if len(similar_items) > 0:
+                similarity = 0
+                for item in similar_items:
+                    if item['similarity'] > similarity:
+                        similarity = item['similarity']
+
+            movies_similarities[key] = similarity
+
+        return movies_similarities
+
+    @staticmethod
+    def get_pairs(ratings, similarities):
+        return [{
+            'id': key,
+            'rating': float(value),
+            'similarity': similarities[key]
+        } for key, value in ratings.items()]
 
     @staticmethod
     def get_user_row(user_id):
@@ -46,6 +87,8 @@ class RecommendationsHelper:
         return user_row
 
     @staticmethod
-    def get_recommendations(ratings, take, skip):
+    def get_recommendations(ratings, take, skip, user_id, genres):
         recommended_movies = RecommendationsHelper.get_dict(ratings, take, skip)
-        return RecommendationsHelper.get_id_rating_pairs(recommended_movies)
+        similarities = RecommendationsHelper.get_similarity_values(user_id, recommended_movies, genres)
+
+        return RecommendationsHelper.get_pairs(recommended_movies, similarities)
