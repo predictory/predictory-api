@@ -22,7 +22,7 @@ class SVDRecommender:
     def recommend(user_id):
         start = time.time()
 
-        rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), rating_fields)
+        rated_movies = RecommendationsHelper.get_user_rated_movies(user_id)
 
         if len(rated_movies) == 0:
             return 0, None
