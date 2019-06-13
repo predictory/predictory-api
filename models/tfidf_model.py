@@ -27,7 +27,7 @@ class TFIDFModel:
 
     @staticmethod
     def save_similarity(movie_id, similarities, indices):
-        max_sim = 50
+        max_sim = 150
         mongo_similarities = mongo.db.tfidf_similarities
         mongo_similarities.delete_many({'id': int(movie_id)})
 
