@@ -27,13 +27,12 @@ class TFIDFModel:
 
     @staticmethod
     def save_similarity(movie_id, similarities, indices):
-        max_sim = 150
         mongo_similarities = mongo.db.tfidf_similarities
         mongo_similarities.delete_many({'id': int(movie_id)})
 
         sim_scores = list(enumerate(similarities))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[1:int(max_sim) + 1]
+        sim_scores = sim_scores[1:]
         movie_indices = [{
             'id': int(indices[i[0]]),
             'similarity': float(i[1])
