@@ -13,7 +13,7 @@ class RecommendationsHelper:
         return dict(ratings[skip:skip + take])
 
     @staticmethod
-    def get_similarity_values(user_id, ratings, genres):
+    def get_similarity_values(user_id, ratings, genres=None):
         mongo_similarities = mongo.db.tfidf_similarities
         rated_movies = RecommendationsHelper.get_user_rated_movies(user_id)
         rated_movies = [item['movieId'] for item in rated_movies]

@@ -50,6 +50,7 @@ class CBFRecommender:
         user_row = RecommendationsHelper.get_user_row(user_id)
         user_row = dict((k, user_row[str(k)]) for k in movies if str(k) in user_row)
         if len(user_row) > 0:
-            user_row = [{'id': k, 'rating': user_row[k]} for k in user_row]
+            user_similarities = RecommendationsHelper.get_similarity_values(user_id, user_row)
+            user_row = RecommendationsHelper.get_pairs(user_row, user_similarities)
 
         return user_row
