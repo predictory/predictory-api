@@ -1,5 +1,6 @@
 from models.lda_recommender import LDARecommender
 from models.tfidf_recommender import TFIDFRecommender
+from utils.recommendations_helper import RecommendationsHelper
 
 
 class CBRecommender:
@@ -20,9 +21,20 @@ class CBRecommender:
     @staticmethod
     def tf_idf(movie_id, k=10):
         recommender = TFIDFRecommender()
+        recommendations = recommender.recommend(movie_id, k)
+        keys = [row['id'] for row in recommendations]
+        stats = RecommendationsHelper.get_stats(keys)
+        recommendations = [{
+            'id': row['id'],
+            'similarity': row['similarity'],
+            'average_rating': stats[row['id']]['average_rating'],
+            'ratings_count': stats[row['id']]['count'],
+            'penalized': stats[row['id']]['penalized']
+        } for row in recommendations]
+
         recommendations = {
             'movieId': movie_id,
-            'recommendations': recommender.recommend(movie_id, k)
+            'recommendations': recommendations
         }
 
         return recommendations

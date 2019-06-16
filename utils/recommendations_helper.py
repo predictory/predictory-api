@@ -93,13 +93,12 @@ class RecommendationsHelper:
     def get_recommendations(ratings, take, skip, user_id, genres):
         recommended_movies = RecommendationsHelper.get_dict(ratings, take, skip)
         similarities = RecommendationsHelper.get_similarity_values(user_id, recommended_movies, genres)
-        stats = RecommendationsHelper.get_stats(recommended_movies)
+        stats = RecommendationsHelper.get_stats(recommended_movies.keys())
 
         return RecommendationsHelper.get_pairs(recommended_movies, similarities, stats)
 
     @staticmethod
     def get_stats(items):
-        keys = items.keys()
         movies = db.session.query(
                 MovieModel.id,
                 func.count(UserRatingModel.id),
@@ -107,7 +106,7 @@ class RecommendationsHelper:
                 func.sum(case([(UserRatingModel.rating == 0, 1)], else_=0))
             ) \
             .join(UserRatingModel)\
-            .filter(MovieModel.id.in_(keys)) \
+            .filter(MovieModel.id.in_(items)) \
             .group_by(MovieModel.id) \
             .all()
 
