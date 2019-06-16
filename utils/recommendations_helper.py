@@ -1,6 +1,6 @@
 from mongo import mongo
 from db import db
-from sqlalchemy import func
+from sqlalchemy import func, case
 from models.movie import MovieModel
 from models.genre import GenreModel
 from models.user_rating import UserRatingModel
@@ -47,11 +47,14 @@ class RecommendationsHelper:
         return movies_similarities
 
     @staticmethod
-    def get_pairs(ratings, similarities):
+    def get_pairs(ratings, similarities, stats):
         return [{
             'id': key,
             'rating': float(value),
-            'similarity': similarities[key]
+            'similarity': similarities[key],
+            'average_rating': stats[key]['average_rating'],
+            'ratings_count': stats[key]['count'],
+            'penalized': stats[key]['penalized'],
         } for key, value in ratings.items()]
 
     @staticmethod
@@ -90,5 +93,29 @@ class RecommendationsHelper:
     def get_recommendations(ratings, take, skip, user_id, genres):
         recommended_movies = RecommendationsHelper.get_dict(ratings, take, skip)
         similarities = RecommendationsHelper.get_similarity_values(user_id, recommended_movies, genres)
+        stats = RecommendationsHelper.get_stats(recommended_movies)
 
-        return RecommendationsHelper.get_pairs(recommended_movies, similarities)
+        return RecommendationsHelper.get_pairs(recommended_movies, similarities, stats)
+
+    @staticmethod
+    def get_stats(items):
+        keys = items.keys()
+        movies = db.session.query(
+                MovieModel.id,
+                func.count(UserRatingModel.id),
+                func.avg(UserRatingModel.rating),
+                func.sum(case([(UserRatingModel.rating == 0, 1)], else_=0))
+            ) \
+            .join(UserRatingModel)\
+            .filter(MovieModel.id.in_(keys)) \
+            .group_by(MovieModel.id) \
+            .all()
+
+        if len(movies) > 0:
+            movies = {movie[0]: {
+                'count': movie[1],
+                'average_rating': movie[2],
+                'penalized': int(movie[3])
+            } for movie in movies}
+
+        return movies
