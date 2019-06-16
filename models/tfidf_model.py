@@ -32,7 +32,7 @@ class TFIDFModel:
 
         sim_scores = list(enumerate(similarities))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[1:]
+        sim_scores = sim_scores[1:151]
         movie_indices = [{
             'id': int(indices[i[0]]),
             'similarity': float(i[1])
