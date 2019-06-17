@@ -52,9 +52,9 @@ class RecommendationsHelper:
             'id': key,
             'rating': float(value),
             'similarity': similarities[key],
-            'average_rating': stats[key]['average_rating'],
-            'ratings_count': stats[key]['count'],
-            'penalized': stats[key]['penalized'],
+            'average_rating': stats[int(key)]['average_rating'],
+            'ratings_count': stats[int(key)]['count'],
+            'penalized': stats[int(key)]['penalized'],
         } for key, value in ratings.items()]
 
     @staticmethod
