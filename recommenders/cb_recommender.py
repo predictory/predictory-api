@@ -27,9 +27,9 @@ class CBRecommender:
         recommendations = [{
             'id': row['id'],
             'similarity': row['similarity'],
-            'average_rating': stats[row['id']]['average_rating'],
-            'ratings_count': stats[row['id']]['count'],
-            'penalized': stats[row['id']]['penalized']
+            'average_rating': stats[int(row['id'])]['average_rating'],
+            'ratings_count': stats[int(row['id'])]['count'],
+            'penalized': stats[int(row['id'])]['penalized']
         } for row in recommendations]
 
         recommendations = {

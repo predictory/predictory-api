@@ -105,7 +105,7 @@ class RecommendationsHelper:
                 func.avg(UserRatingModel.rating),
                 func.sum(case([(UserRatingModel.rating == 0, 1)], else_=0))
             ) \
-            .join(UserRatingModel)\
+            .join(UserRatingModel, isouter=True)\
             .filter(MovieModel.id.in_(items)) \
             .group_by(MovieModel.id) \
             .all()
@@ -113,7 +113,7 @@ class RecommendationsHelper:
         if len(movies) > 0:
             movies = {movie[0]: {
                 'count': movie[1],
-                'average_rating': movie[2],
+                'average_rating': movie[2] if movie[2] is not None else 0,
                 'penalized': int(movie[3])
             } for movie in movies}
 
