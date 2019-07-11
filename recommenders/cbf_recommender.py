@@ -15,14 +15,14 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id)
 
-        recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip, user_id, genres)
-        ExpertSystem.get_scores(user_id, recommendations)
+        recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
+        recommendations = ExpertSystem.get_scores(user_id, recommendations)
 
         recommendations = {
             'userId': user_id,
             'ratedItemsCount': num_of_rated_items,
             'ratingsCount': num_of_ratings,
-            'recommendations': recommendations
+            'recommendations': recommendations[:take]
         }
 
         return recommendations
@@ -36,13 +36,14 @@ class CBFRecommender:
                                                                                      genres_ids,
                                                                                      movie_type,
                                                                                      include_rated)
-        recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip, user_id, genres)
+        recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
+        recommendations = ExpertSystem.get_scores(user_id, recommendations)
 
         recommendations = {
             'userId': user_id,
             'ratedItemsCount': num_of_rated_items,
             'ratingsCount': num_of_ratings,
-            'recommendations': recommendations
+            'recommendations': recommendations[:take]
         }
 
         return recommendations
@@ -55,5 +56,6 @@ class CBFRecommender:
             user_similarities = RecommendationsHelper.get_similarity_values(user_id, user_row)
             stats = RecommendationsHelper.get_stats(user_row.keys())
             user_row = RecommendationsHelper.get_pairs(user_row, user_similarities, stats)
+            user_row = ExpertSystem.get_scores(user_id, user_row)
 
         return user_row

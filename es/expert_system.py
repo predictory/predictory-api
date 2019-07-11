@@ -27,7 +27,12 @@ class ExpertSystem:
             subprocess.call(f'wine ./es/hierarchic_base.exe -k {knb} -i {input_file} -o {output_file}', shell=True)
 
         output_data = ExpertSystem.get_output_data(output_file)
-        print(output_data)
+        for i, value in enumerate(output_data):
+            data[i]['es_score'] = value
+        ExpertSystem.delete_files(input_file, output_file)
+        data = sorted(data, key=lambda x: (x['rating'], x['es_score']), reverse=True)
+
+        return data
 
     @staticmethod
     def create_folders(input_path, output_path):
@@ -64,3 +69,11 @@ class ExpertSystem:
                 data.append(float(output_value))
 
         return data
+
+    @staticmethod
+    def delete_files(input_file_path, output_file_path):
+        if os.path.exists(input_file_path):
+            os.remove(input_file_path)
+
+        if os.path.exists(output_file_path):
+            os.remove(output_file_path)
