@@ -35,9 +35,8 @@ class RecommendationsHelper:
             similarities = mongo_similarities.find_one({'id': int(key)})
             similarities = similarities['similarities']
             similar_items = [item for item in similarities if item['id'] in rated_movies]
-            similarity = None
+            similarity = 0
             if len(similar_items) > 0:
-                similarity = 0
                 for item in similar_items:
                     if item['similarity'] > similarity:
                         similarity = item['similarity']

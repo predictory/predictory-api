@@ -1,4 +1,5 @@
 from models.svd_recommender import SVDRecommender
+from es.expert_system import ExpertSystem
 from utils.recommendations_helper import RecommendationsHelper
 
 
@@ -15,6 +16,7 @@ class CBFRecommender:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id)
 
         recommendations = RecommendationsHelper.get_recommendations(ratings, take, skip, user_id, genres)
+        ExpertSystem.get_scores(user_id, recommendations)
 
         recommendations = {
             'userId': user_id,
