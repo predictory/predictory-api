@@ -1,6 +1,7 @@
 from models.lda_recommender import LDARecommender
 from models.tfidf_recommender import TFIDFRecommender
 from utils.recommendations_helper import RecommendationsHelper
+from es.expert_system import ExpertSystem
 
 
 class CBRecommender:
@@ -31,6 +32,7 @@ class CBRecommender:
             'ratings_count': stats[int(row['id'])]['count'],
             'penalized': stats[int(row['id'])]['penalized']
         } for row in recommendations]
+        recommendations = ExpertSystem.get_scores(movie_id, recommendations)
 
         recommendations = {
             'movieId': movie_id,

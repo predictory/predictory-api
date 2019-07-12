@@ -9,14 +9,14 @@ class ExpertSystem:
         print('training')
 
     @staticmethod
-    def get_scores(user_id, data):
+    def get_scores(id, data):
         now = time.time()
         input_path = 'es/data/'
         output_path = 'es/output/'
         ExpertSystem.create_folders(input_path, output_path)
 
-        input_file = f'{input_path}data_{user_id}_{now}.txt'
-        output_file = f'{output_path}output_{user_id}_{now}.txt'
+        input_file = f'{input_path}data_{id}_{now}.txt'
+        output_file = f'{output_path}output_{id}_{now}.txt'
 
         # Input file config
         ExpertSystem.create_input_file(input_file, data)
@@ -34,7 +34,7 @@ class ExpertSystem:
         for i, value in enumerate(output_data):
             data[i]['es_score'] = value
         ExpertSystem.delete_files(input_file, output_file)
-        data = sorted(data, key=lambda x: (x['rating'], x['es_score']), reverse=True)
+        data = sorted(data, key=lambda x: (x['rating' if 'rating' in x else 'similarity'], x['es_score']), reverse=True)
 
         return data
 
