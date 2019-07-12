@@ -1,5 +1,6 @@
 import subprocess
 import os
+import time
 
 
 class ExpertSystem:
@@ -9,12 +10,13 @@ class ExpertSystem:
 
     @staticmethod
     def get_scores(user_id, data):
+        now = time.time()
         input_path = 'es/data/'
         output_path = 'es/output/'
         ExpertSystem.create_folders(input_path, output_path)
 
-        input_file = f'{input_path}data_{user_id}.txt'
-        output_file = f'{output_path}output_{user_id}.txt'
+        input_file = f'{input_path}data_{user_id}_{now}.txt'
+        output_file = f'{output_path}output_{user_id}_{now}.txt'
 
         # Input file config
         ExpertSystem.create_input_file(input_file, data)
