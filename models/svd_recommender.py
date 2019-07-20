@@ -25,7 +25,7 @@ class SVDRecommender:
         rated_movies = RecommendationsHelper.get_user_rated_movies(user_id)
 
         if len(rated_movies) == 0:
-            return 0, None
+            return 0, 0, None
 
         user_row = RecommendationsHelper.get_user_movies(rated_movies, user_id)
 
@@ -41,7 +41,12 @@ class SVDRecommender:
     def recommend_by_genre(user_id, genres_ids, movie_type=None, include_rated=False):
         start = time.time()
 
-        rated_movies = marshal(UserRatingModel.query.filter_by(userId=user_id).all(), rating_fields)
+        rated_movies = UserRatingModel.query.filter_by(userId=user_id).all()
+
+        if len(rated_movies) == 0:
+            return 0, 0, None
+
+        rated_movies = marshal(rated_movies, rating_fields)
         genre_movies = db.session.query(MovieModel.id).join(MovieModel.genres)
 
         if movie_type is not None:
@@ -50,9 +55,6 @@ class SVDRecommender:
         genre_movies = genre_movies.filter(GenreModel.id.in_(genres_ids))\
             .group_by(MovieModel.id)\
             .having(func.count(GenreModel.id) == len(genres_ids)).all()
-
-        if len(rated_movies) == 0:
-            return 0, None
 
         if len(genre_movies) == 0:
             return len(rated_movies), None

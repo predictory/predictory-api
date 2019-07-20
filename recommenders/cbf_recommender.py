@@ -15,14 +15,18 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id)
 
-        recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
-        recommendations = ExpertSystem.get_scores(user_id, recommendations)
+        if ratings is not None and num_of_rated_items > 0:
+            recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
+            recommendations = ExpertSystem.get_scores(user_id, recommendations)
+            recommendations = recommendations[:take]
+        else:
+            recommendations = ratings
 
         recommendations = {
             'userId': user_id,
             'ratedItemsCount': num_of_rated_items,
             'ratingsCount': num_of_ratings,
-            'recommendations': recommendations[:take]
+            'recommendations': recommendations
         }
 
         return recommendations
@@ -36,14 +40,18 @@ class CBFRecommender:
                                                                                      genres_ids,
                                                                                      movie_type,
                                                                                      include_rated)
-        recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
-        recommendations = ExpertSystem.get_scores(user_id, recommendations)
+        if ratings is not None and num_of_rated_items > 0:
+            recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
+            recommendations = ExpertSystem.get_scores(user_id, recommendations)
+            recommendations = recommendations[:take]
+        else:
+            recommendations = ratings
 
         recommendations = {
             'userId': user_id,
             'ratedItemsCount': num_of_rated_items,
             'ratingsCount': num_of_ratings,
-            'recommendations': recommendations[:take]
+            'recommendations': recommendations
         }
 
         return recommendations
