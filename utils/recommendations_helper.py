@@ -61,7 +61,10 @@ class RecommendationsHelper:
         mongo_ratings = mongo.db.users_ratings
 
         user_row = mongo_ratings.find_one({'id': user_id})
-        return user_row['ratings']
+        if user_row is not None:
+            return user_row['ratings']
+        else:
+            return None
 
     @staticmethod
     def get_user_rated_movies(user_id):
