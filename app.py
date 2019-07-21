@@ -1,9 +1,9 @@
-from envparse import env
 from flask import Flask
 from flask_restful import Api
 
 from db import db
 from mongo import mongo
+from app_config import app_config
 from resources.movie import Movie
 from resources.movie_recommendation import MovieRecommendation
 from resources.user_recommendation import UserRecommendation
@@ -12,42 +12,31 @@ from resources.user_retrain import UserRetrain
 from resources.retrain import Retrain
 from resources.search import Search
 from resources.similarity_distribution import SimilarityDistribution
-# from resources.movie_topics import MovieTopics
 
 from cli.train import train_models
 
-app = Flask(__name__)
 
+def create_app():
+    app = Flask('app')
+    app.config['SQLALCHEMY_DATABASE_URI'] = app_config['db_uri']
+    app.config['SQLALCHEMY_ECHO'] = app_config['alchemy_echo']
+    app.config['MONGO_URI'] = app_config['mongo_uri']
 
-db_user = env('DB_USER', default='root')
-db_password = env('DB_PASSWORD', default='')
-db_name = env('DB_NAME', default='recommender')
-db_host = env('DB_HOST', default='localhost')
-db_port = env('DB_PORT', default=3306)
-db_dialect = env('DB_DIALECT', default='mysql')
+    api = Api(app)
+    db.init_app(app)
+    mongo.init_app(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'{db_dialect}+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
-app.config['SQLALCHEMY_ECHO'] = False
-app.config["MONGO_URI"] = "mongodb://localhost:27017/recommender"
-api = Api(app)
-db.init_app(app)
-mongo.init_app(app)
+    api.add_resource(Movie, '/movies')
+    api.add_resource(SimilarityDistribution, '/movies/similarities-distribution')
+    api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
+    api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
+    api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
+    api.add_resource(UserRetrain, '/train/users/<int:user_id>')
+    api.add_resource(Retrain, '/train')
+    api.add_resource(Search, '/search/<int:user_id>')
 
-api.add_resource(Movie, '/movies')
-api.add_resource(SimilarityDistribution, '/movies/similarities-distribution')
-api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
-api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
-api.add_resource(HybridRecommendation, '/recommendations/<int:user_id>/<int:movie_id>')
-api.add_resource(UserRetrain, '/train/users/<int:user_id>')
-api.add_resource(Retrain, '/train')
-api.add_resource(Search, '/search/<int:user_id>')
-# api.add_resource(MovieTopics, '/movies/<int:movie_id>/topics')
+    @app.cli.command()
+    def train():
+        train_models()
 
-
-@app.cli.command()
-def train():
-    train_models()
-
-
-if __name__ == '__main__':
-    app.run(port=3002, debug=True)
+    return app

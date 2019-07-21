@@ -14,3 +14,6 @@ envparse
 pymongo
 Flask-PyMongo
 uwsgi
+redis
+Flask-Redis
+huey
