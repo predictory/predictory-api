@@ -67,7 +67,7 @@ You can also start training by accessing route `/train`.
 To start the API, run command
 
 ```
-python app.py
+python main.py
 ```
 
 It's not recommended to use this command in production mode. For that, use package `uwsgi` and configure your server properly (you can find more information [here](https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uswgi-and-nginx-on-ubuntu-18-04)).
