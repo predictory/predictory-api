@@ -1,6 +1,6 @@
-# Hybrid recommender API
+# Predictory - API
 
-> Recommender API for [Hybrid recommender APP](https://github.com/Fir3st/hybrid-recommender-app)
+> Recommender API for [Predictory APP](https://github.com/predictory/predictory-app)
 
 ## Installation
 
@@ -47,7 +47,7 @@ app_config = {
 
 ### Database setup, data preparation, database population
 
-All of these steps are performed by [Recommender APP](https://github.com/Fir3st/hybrid-recommender-app).
+All of these steps are performed by [Predictory APP](https://github.com/predictory/predictory-app).
 Follow instructions in APP repo to prepare data for this API.
 
 ### Training recommender API
