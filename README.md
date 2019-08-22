@@ -76,6 +76,6 @@ It's not recommended to use this command in production mode. For that, use packa
 
 The project is using redis queue for retraining tasks (created with [huey](https://github.com/coleifer/huey)).  For proper functioning of the application, you need to run huey worker (for processing incoming tasks) as well. To start huey worker, run
 ```
-python venv/Scripts/huey_consumer.py huey_queue.huey
+python venv/Scripts/huey_consumer.py run_huey.huey
 ```
 (this command works for Windows, for Linux replace Scripts folder in the path with `bin` folder)
