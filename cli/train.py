@@ -41,4 +41,5 @@ def train_models():
     print('Started training models')
     train_svd()
     train_tf_idf()
+    train_lda()
     print('Finished training models')
