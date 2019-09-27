@@ -3,7 +3,8 @@ from mongo import mongo
 
 
 class TFIDFRecommender:
-    def recommend(self, movie_id, k=10):
+    @staticmethod
+    def recommend(movie_id, k=10):
         start = time.time()
 
         mongo_similarities = mongo.db.tfidf_similarities
