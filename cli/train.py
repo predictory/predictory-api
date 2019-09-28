@@ -2,12 +2,12 @@ import pandas as pd
 from models.lda_model import LDAModel
 from models.svd_model import SVDModel
 from models.tfidf_model import TFIDFModel
-from utils.data_helper import DataHelper
+from utils.database_helper import DatabaseHelper
 
 
 def train_svd():
     svd_model = SVDModel()
-    data, movies, users = DataHelper.load_data()
+    data, movies, users = DatabaseHelper.load_data_matrix()
     U, sigma, Vt, predicted_ratings = svd_model.train(data, 20)
     ratings_df = pd.DataFrame(predicted_ratings, columns=movies, index=users)
 

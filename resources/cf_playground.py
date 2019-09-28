@@ -16,7 +16,8 @@ class CFPlayground(Resource):
 
         if rec_type == 'item-based':
             # TODO: create item-based recommender
-            recommendations = {'dummy': 'content'}
+            recommendations = CBFRecommender.get_recommendations_item_based(user_id, take, skip, genres, movie_type,
+                                                                            sim_type)
         elif rec_type == 'user-based':
             # TODO: create user-based recommender
             recommendations = {'dummy': 'content'}

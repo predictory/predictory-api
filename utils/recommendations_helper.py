@@ -1,9 +1,14 @@
+import pandas as pd
+from sklearn.metrics.pairwise import pairwise_distances
+import numpy as np
+import json
 from mongo import mongo
 from db import db
 from sqlalchemy import func, case
 from models.movie import MovieModel
 from models.genre import GenreModel
 from models.user_rating import UserRatingModel
+from utils.database_helper import DatabaseHelper
 
 
 class RecommendationsHelper:
@@ -120,3 +125,38 @@ class RecommendationsHelper:
             } for movie in movies}
 
         return movies
+
+    @staticmethod
+    def get_user_movies_custom_based(rated_movies, user_id, include_rated=False, rec_type='item-based',
+                                     sim_type='cosine'):
+        data, movies, users = DatabaseHelper.load_data_matrix()
+        data_matrix = pd.DataFrame(data.todense(), columns=movies, index=users)
+
+        if rec_type == 'item-based':
+            similarity = 1 - pairwise_distances(data_matrix.transpose(), metric=sim_type)
+            prediction = data_matrix.values.dot(similarity) / np.array([np.abs(similarity).sum(axis=1)])
+        else:
+            similarity = 1 - pairwise_distances(data_matrix, metric=sim_type)
+            mean_user_rating = data_matrix.value.mean(axis=1)
+            ratings_diff = (data_matrix.value - mean_user_rating[:, np.newaxis])
+            prediction = mean_user_rating[:, np.newaxis] + similarity.dot(ratings_diff) / np.array(
+                [np.abs(similarity).sum(axis=1)]).T
+
+        prediction = pd.DataFrame(prediction, columns=movies, index=users)
+        user_row = prediction.loc[user_id].to_dict()
+
+        if not include_rated:
+            for movie in rated_movies:
+                try:
+                    del user_row[movie['movieId']]
+                except:
+                    print('Movie not found')
+        else:
+            penalized_movies = list(filter(lambda movie: movie['rating'] == 0, rated_movies))
+            for movie in penalized_movies:
+                try:
+                    del user_row[movie['movieId']]
+                except:
+                    print('Movie not found')
+
+        return user_row
