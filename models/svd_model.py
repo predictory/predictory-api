@@ -1,5 +1,5 @@
 import os
-from flask_restful import fields, marshal
+from flask_restful import fields
 import numpy as np
 import pandas as pd
 import pickle

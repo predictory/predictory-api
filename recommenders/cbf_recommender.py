@@ -1,6 +1,7 @@
 from models.svd_recommender import SVDRecommender
 from es.expert_system import ExpertSystem
 from utils.recommendations_helper import RecommendationsHelper
+from utils.data_helper import DataHelper
 
 
 class CBFRecommender:
@@ -15,19 +16,9 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id)
 
-        if ratings is not None and num_of_rated_items > 0:
-            recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
-            recommendations = ExpertSystem.get_scores(user_id, recommendations)
-            recommendations = recommendations[:take]
-        else:
-            recommendations = ratings
-
-        recommendations = {
-            'userId': user_id,
-            'ratedItemsCount': num_of_rated_items,
-            'ratingsCount': num_of_ratings,
-            'recommendations': recommendations
-        }
+        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres)
+        recommendations = DataHelper.pack_recommendations_for_response(user_id, recommendations, num_of_rated_items,
+                                                                       num_of_ratings)
 
         return recommendations
 
@@ -40,19 +31,10 @@ class CBFRecommender:
                                                                                      genres_ids,
                                                                                      movie_type,
                                                                                      include_rated)
-        if ratings is not None and num_of_rated_items > 0:
-            recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
-            recommendations = ExpertSystem.get_scores(user_id, recommendations)
-            recommendations = recommendations[:take]
-        else:
-            recommendations = ratings
 
-        recommendations = {
-            'userId': user_id,
-            'ratedItemsCount': num_of_rated_items,
-            'ratingsCount': num_of_ratings,
-            'recommendations': recommendations
-        }
+        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres)
+        recommendations = DataHelper.pack_recommendations_for_response(user_id, recommendations, num_of_rated_items,
+                                                                       num_of_ratings)
 
         return recommendations
 
