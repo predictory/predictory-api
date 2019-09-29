@@ -1,9 +1,8 @@
 import time
-from flask_restful import fields, marshal
+from flask_restful import fields
 from db import db
 from sqlalchemy import func
 
-from models.user_rating import UserRatingModel
 from models.movie import MovieModel
 from models.genre import GenreModel
 from utils.recommendations_helper import RecommendationsHelper
@@ -41,12 +40,11 @@ class SVDRecommender:
     def recommend_by_genre(user_id, genres_ids, movie_type=None, include_rated=False):
         start = time.time()
 
-        rated_movies = UserRatingModel.query.filter_by(userId=user_id).all()
+        rated_movies = RecommendationsHelper.get_user_rated_movies(user_id)
 
         if len(rated_movies) == 0:
             return 0, 0, None
 
-        rated_movies = marshal(rated_movies, rating_fields)
         genre_movies = db.session.query(MovieModel.id).join(MovieModel.genres)
 
         if movie_type is not None:

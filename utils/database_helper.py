@@ -21,3 +21,7 @@ class DatabaseHelper:
             data_matrix.at[line.userId, line.movieId] = line.rating
 
         return csr_matrix(data_matrix, dtype=np.float32), movies, users
+
+    @staticmethod
+    def get_movies_by_genres_and_type(genres_ids, movie_type):
+        print('genres')
