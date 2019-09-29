@@ -38,7 +38,7 @@ class LDAModel:
         self.num_of_iterations = 100
         self.passes = 3
         self.minimum_probability = 0.01
-        self.num_similarities = 30
+        self.num_similarities = 150
 
     @staticmethod
     def lemmatize_stemming(text):
