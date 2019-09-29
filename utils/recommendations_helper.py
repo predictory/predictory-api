@@ -137,8 +137,8 @@ class RecommendationsHelper:
             prediction = data_matrix.values.dot(similarity) / np.array([np.abs(similarity).sum(axis=1)])
         else:
             similarity = 1 - pairwise_distances(data_matrix, metric=sim_type)
-            mean_user_rating = data_matrix.value.mean(axis=1)
-            ratings_diff = (data_matrix.value - mean_user_rating[:, np.newaxis])
+            mean_user_rating = data_matrix.values.mean(axis=1)
+            ratings_diff = (data_matrix.values - mean_user_rating[:, np.newaxis])
             prediction = mean_user_rating[:, np.newaxis] + similarity.dot(ratings_diff) / np.array(
                 [np.abs(similarity).sum(axis=1)]).T
 

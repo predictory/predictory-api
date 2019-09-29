@@ -15,12 +15,11 @@ class CFPlayground(Resource):
         skip = request.args.get('skip', 0, int)
 
         if rec_type == 'item-based':
-            # TODO: create item-based recommender
             recommendations = CBFRecommender.get_recommendations_item_based(user_id, take, skip, genres, movie_type,
                                                                             sim_type)
         elif rec_type == 'user-based':
-            # TODO: create user-based recommender
-            recommendations = {'dummy': 'content'}
+            recommendations = CBFRecommender.get_recommendations_user_based(user_id, take, skip, genres, movie_type,
+                                                                            sim_type)
         else:
             recommendations = CBFRecommender.get_recommendations(user_id, take, skip, genres, movie_type)
 

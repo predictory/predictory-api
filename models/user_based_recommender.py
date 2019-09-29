@@ -8,7 +8,7 @@ from models.genre import GenreModel
 from utils.recommendations_helper import RecommendationsHelper
 
 
-class ItemBasedRecommender:
+class UserBasedRecommender:
     @staticmethod
     def recommend(user_id, sim_type='cosine'):
         start = time.time()
@@ -20,7 +20,7 @@ class ItemBasedRecommender:
 
         user_row = RecommendationsHelper.get_user_movies_custom_based(rated_movies, user_id,
                                                                       include_rated=False,
-                                                                      rec_type='item-based',
+                                                                      rec_type='user-based',
                                                                       sim_type=sim_type)
 
         ratings = sorted(user_row.items(), reverse=True, key=lambda kv: kv[1])
@@ -55,7 +55,7 @@ class ItemBasedRecommender:
         genre_movies = [movie[0] for movie in genre_movies]
 
         user_row = RecommendationsHelper.get_user_movies_custom_based(rated_movies, user_id, include_rated,
-                                                                      'item-based',
+                                                                      'user-based',
                                                                       sim_type)
 
         user_row = dict((k, user_row[k]) for k in genre_movies if k in user_row)

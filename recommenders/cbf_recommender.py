@@ -1,5 +1,6 @@
 from models.svd_recommender import SVDRecommender
 from models.item_based_recommender import ItemBasedRecommender
+from models.user_based_recommender import UserBasedRecommender
 from es.expert_system import ExpertSystem
 from utils.recommendations_helper import RecommendationsHelper
 from utils.data_helper import DataHelper
@@ -58,6 +59,23 @@ class CBFRecommender:
     @staticmethod
     def get_recommendations_item_based(user_id, take=10, skip=0, genres=None, movie_type=None, sim_type='cosine'):
         recommender = ItemBasedRecommender()
+
+        if genres is not None:
+            genres_ids = genres.split(',')
+            num_of_rated_items, num_of_ratings, ratings = recommender.recommend_by_genre(user_id, genres_ids,
+                                                                                         movie_type, sim_type=sim_type)
+        else:
+            num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id, sim_type)
+
+        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres)
+        recommendations = DataHelper.pack_recommendations_for_response(user_id, recommendations, num_of_rated_items,
+                                                                       num_of_ratings)
+
+        return recommendations
+
+    @staticmethod
+    def get_recommendations_user_based(user_id, take=10, skip=0, genres=None, movie_type=None, sim_type='cosine'):
+        recommender = UserBasedRecommender()
 
         if genres is not None:
             genres_ids = genres.split(',')
