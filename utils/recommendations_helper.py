@@ -20,8 +20,7 @@ class RecommendationsHelper:
     @staticmethod
     def get_similarity_values(user_id, ratings, genres=None, sim_source='tf-idf'):
         if sim_source == 'lda':
-            print('lda')
-            mongo_similarities = mongo.db.tfidf_similarities
+            mongo_similarities = mongo.db.similarities
         else:
             mongo_similarities = mongo.db.tfidf_similarities
 
