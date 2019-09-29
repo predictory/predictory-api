@@ -5,9 +5,10 @@ from utils.recommendations_helper import RecommendationsHelper
 class DataHelper:
 
     @staticmethod
-    def prepare_cbf_data(user_id, num_of_rated_items, ratings, take=10, skip=0, genres=None):
+    def prepare_cbf_data(user_id, num_of_rated_items, ratings, take=10, skip=0, genres=None, sim_source='tf-idf'):
         if ratings is not None and num_of_rated_items > 0:
-            recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres)
+            recommendations = RecommendationsHelper.get_recommendations(ratings, take * 2, skip, user_id, genres,
+                                                                        sim_source)
             recommendations = ExpertSystem.get_scores(user_id, recommendations)
             recommendations = recommendations[:take]
         else:

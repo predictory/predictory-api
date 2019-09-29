@@ -8,7 +8,7 @@ from utils.data_helper import DataHelper
 
 class CBFRecommender:
     @staticmethod
-    def get_recommendations(user_id, take=10, skip=0, genres=None, movie_type=None):
+    def get_recommendations(user_id, take=10, skip=0, genres=None, movie_type=None, sim_source='tf-idf'):
         recommender = SVDRecommender()
 
         if genres is not None:
@@ -18,7 +18,8 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id)
 
-        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres)
+        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
+                                                      sim_source)
         recommendations = DataHelper.pack_recommendations_for_response(user_id, recommendations, num_of_rated_items,
                                                                        num_of_ratings)
 
@@ -57,7 +58,8 @@ class CBFRecommender:
         return user_row
 
     @staticmethod
-    def get_recommendations_item_based(user_id, take=10, skip=0, genres=None, movie_type=None, sim_type='cosine'):
+    def get_recommendations_item_based(user_id, take=10, skip=0, genres=None, movie_type=None, sim_type='cosine',
+                                       sim_source='tf-idf'):
         recommender = ItemBasedRecommender()
 
         if genres is not None:
@@ -67,14 +69,16 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id, sim_type)
 
-        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres)
+        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
+                                                      sim_source)
         recommendations = DataHelper.pack_recommendations_for_response(user_id, recommendations, num_of_rated_items,
                                                                        num_of_ratings)
 
         return recommendations
 
     @staticmethod
-    def get_recommendations_user_based(user_id, take=10, skip=0, genres=None, movie_type=None, sim_type='cosine'):
+    def get_recommendations_user_based(user_id, take=10, skip=0, genres=None, movie_type=None, sim_type='cosine',
+                                       sim_source='tf-idf'):
         recommender = UserBasedRecommender()
 
         if genres is not None:
@@ -84,7 +88,8 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id, sim_type)
 
-        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres)
+        recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
+                                                      sim_source)
         recommendations = DataHelper.pack_recommendations_for_response(user_id, recommendations, num_of_rated_items,
                                                                        num_of_ratings)
 

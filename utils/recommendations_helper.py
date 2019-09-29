@@ -18,8 +18,13 @@ class RecommendationsHelper:
         return dict(ratings[skip:skip + take])
 
     @staticmethod
-    def get_similarity_values(user_id, ratings, genres=None):
-        mongo_similarities = mongo.db.tfidf_similarities
+    def get_similarity_values(user_id, ratings, genres=None, sim_source='tf-idf'):
+        if sim_source == 'lda':
+            print('lda')
+            mongo_similarities = mongo.db.tfidf_similarities
+        else:
+            mongo_similarities = mongo.db.tfidf_similarities
+
         rated_movies = RecommendationsHelper.get_user_rated_movies(user_id)
         rated_movies = [item['movieId'] for item in rated_movies]
         movies_similarities = dict()
@@ -97,9 +102,9 @@ class RecommendationsHelper:
         return user_row
 
     @staticmethod
-    def get_recommendations(ratings, take, skip, user_id, genres):
+    def get_recommendations(ratings, take, skip, user_id, genres, sim_source='tf-idf'):
         recommended_movies = RecommendationsHelper.get_dict(ratings, take, skip)
-        similarities = RecommendationsHelper.get_similarity_values(user_id, recommended_movies, genres)
+        similarities = RecommendationsHelper.get_similarity_values(user_id, recommended_movies, genres, sim_source)
         stats = RecommendationsHelper.get_stats(recommended_movies.keys())
 
         return RecommendationsHelper.get_pairs(recommended_movies, similarities, stats)
