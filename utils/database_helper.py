@@ -3,6 +3,9 @@ import pandas as pd
 from scipy.sparse import csr_matrix
 from db import db
 from models.user_rating import UserRatingModel
+from models.movie import MovieModel
+from models.genre import GenreModel
+from sqlalchemy import func
 
 
 class DatabaseHelper:
@@ -24,4 +27,16 @@ class DatabaseHelper:
 
     @staticmethod
     def get_movies_by_genres_and_type(genres_ids, movie_type):
-        print('genres')
+        genre_movies = db.session.query(MovieModel.id).join(MovieModel.genres)
+
+        if movie_type is not None:
+            genre_movies = genre_movies.filter(MovieModel.type == movie_type)
+
+        genre_movies = genre_movies.filter(GenreModel.id.in_(genres_ids)) \
+            .group_by(MovieModel.id) \
+            .having(func.count(GenreModel.id) == len(genres_ids)).all()
+
+        if len(genre_movies) == 0:
+            return genre_movies
+
+        return [movie[0] for movie in genre_movies]

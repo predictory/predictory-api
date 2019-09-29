@@ -1,11 +1,6 @@
 import time
-from flask_restful import fields
-from db import db
-from sqlalchemy import func
-
-from models.movie import MovieModel
-from models.genre import GenreModel
 from utils.recommendations_helper import RecommendationsHelper
+from utils.database_helper import DatabaseHelper
 
 
 class UserBasedRecommender:
@@ -40,19 +35,10 @@ class UserBasedRecommender:
         if len(rated_movies) == 0:
             return 0, 0, None
 
-        genre_movies = db.session.query(MovieModel.id).join(MovieModel.genres)
-
-        if movie_type is not None:
-            genre_movies = genre_movies.filter(MovieModel.type == movie_type)
-
-        genre_movies = genre_movies.filter(GenreModel.id.in_(genres_ids))\
-            .group_by(MovieModel.id)\
-            .having(func.count(GenreModel.id) == len(genres_ids)).all()
+        genre_movies = DatabaseHelper.get_movies_by_genres_and_type(genres_ids, movie_type)
 
         if len(genre_movies) == 0:
-            return len(rated_movies), None
-
-        genre_movies = [movie[0] for movie in genre_movies]
+            return len(rated_movies), 0, None
 
         user_row = RecommendationsHelper.get_user_movies_custom_based(rated_movies, user_id, include_rated,
                                                                       'user-based',
