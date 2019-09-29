@@ -3,7 +3,7 @@ from flask import request
 from recommenders.cbf_recommender import CBFRecommender
 
 
-class CFPlayground(Resource):
+class CBFPlayground(Resource):
 
     @staticmethod
     def get(user_id):

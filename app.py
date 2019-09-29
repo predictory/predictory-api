@@ -12,7 +12,8 @@ from resources.user_retrain import UserRetrain
 from resources.retrain import Retrain
 from resources.search import Search
 from resources.similarity_distribution import SimilarityDistribution
-from resources.cf_playground import CFPlayground
+from resources.cbf_playground import CBFPlayground
+from resources.cb_playground import CBPlayground
 
 from cli.train import train_models
 
@@ -35,7 +36,8 @@ def create_app():
     api.add_resource(UserRetrain, '/train/users/<int:user_id>')
     api.add_resource(Retrain, '/train')
     api.add_resource(Search, '/search/<int:user_id>')
-    api.add_resource(CFPlayground, '/users-playground/<int:user_id>')
+    api.add_resource(CBFPlayground, '/users-playground/<int:user_id>')
+    api.add_resource(CBPlayground, '/movies-playground/<int:movie_id>')
 
     @app.cli.command()
     def train():
