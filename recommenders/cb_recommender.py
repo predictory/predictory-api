@@ -6,12 +6,12 @@ from es.expert_system import ExpertSystem
 
 class CBRecommender:
     @staticmethod
-    def get_recommendations(movie_id, k=10, rec_type='tf-idf'):
+    def get_recommendations(movie_id, k=10, rec_type='tf-idf', genres=None, movie_type=None):
         print(f"Recommending for: {rec_type}, movie ID: {movie_id}, K: {k}")
         if rec_type == 'lda':
-            recommendations = LDARecommender.recommend(movie_id, k)
+            recommendations = LDARecommender.recommend(movie_id, k, genres, movie_type)
         else:
-            recommendations = TFIDFRecommender.recommend(movie_id, k)
+            recommendations = TFIDFRecommender.recommend(movie_id, k, genres, movie_type)
 
         keys = [row['id'] for row in recommendations]
         stats = RecommendationsHelper.get_stats(keys)
