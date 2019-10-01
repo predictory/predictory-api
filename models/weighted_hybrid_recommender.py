@@ -5,7 +5,7 @@ from utils.recommendations_helper import RecommendationsHelper
 
 class WeightedHybridRecommender:
     def __init__(self):
-        self.MIN_NUM_OF_ITEMS = 10
+        self.MIN_NUM_OF_ITEMS = 20
         self.MAIN_RECOMMENDER_WEIGHT = .8
         self.SECOND_RECOMMENDER_WEIGHT = .2
 
