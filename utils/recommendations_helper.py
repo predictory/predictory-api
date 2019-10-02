@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
-import json
 from mongo import mongo
 from db import db
 from sqlalchemy import func, case
