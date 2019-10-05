@@ -166,6 +166,6 @@ class RecommendationsHelper:
 
     @staticmethod
     def sort(recommendations, keys):
-        data = sorted(recommendations, key=lambda x: [x[key] for key in keys],
+        data = sorted(recommendations, key=lambda x: [x[key] for key in keys if key in x],
                       reverse=True)
         return data
