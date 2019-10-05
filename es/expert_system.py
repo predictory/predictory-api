@@ -34,7 +34,6 @@ class ExpertSystem:
         for i, value in enumerate(output_data):
             data[i]['es_score'] = value
         ExpertSystem.delete_files(input_file, output_file)
-        data = sorted(data, key=lambda x: (x['rating' if 'rating' in x else 'similarity'], x['es_score']), reverse=True)
 
         return data
 

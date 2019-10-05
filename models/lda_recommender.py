@@ -27,7 +27,7 @@ class LDARecommender:
 
             similarities = [item for item in similarities if item['id'] in genre_movies]
 
-        return similarities[:k]
+        return similarities
 
     @staticmethod
     def get_movie_topics(movie_id):

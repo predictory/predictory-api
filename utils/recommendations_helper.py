@@ -163,3 +163,9 @@ class RecommendationsHelper:
                     print('Movie not found')
 
         return user_row
+
+    @staticmethod
+    def sort(recommendations, keys):
+        data = sorted(recommendations, key=lambda x: [x[key] for key in keys],
+                      reverse=True)
+        return data
