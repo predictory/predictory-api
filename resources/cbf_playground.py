@@ -14,14 +14,17 @@ class CBFPlayground(Resource):
         sim_source = request.args.get('sim_source', 'tf-idf')
         take = request.args.get('take', 10, int)
         skip = request.args.get('skip', 0, int)
+        order_by = request.args.get('order_by', 'rating,es_score')
+        order_by = order_by.split(',')
 
         if rec_type == 'item-based':
             recommendations = CBFRecommender.get_recommendations_item_based(user_id, take, skip, genres, movie_type,
-                                                                            sim_type, sim_source)
+                                                                            sim_type, sim_source, order_by)
         elif rec_type == 'user-based':
             recommendations = CBFRecommender.get_recommendations_user_based(user_id, take, skip, genres, movie_type,
-                                                                            sim_type, sim_source)
+                                                                            sim_type, sim_source, order_by)
         else:
-            recommendations = CBFRecommender.get_recommendations(user_id, take, skip, genres, movie_type, sim_source)
+            recommendations = CBFRecommender.get_recommendations(user_id, take, skip, genres, movie_type, sim_source,
+                                                                 order_by)
 
         return recommendations, 200
