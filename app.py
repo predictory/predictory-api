@@ -14,6 +14,7 @@ from resources.similarity_distribution import SimilarityDistribution
 from resources.cbf_playground import CBFPlayground
 from resources.cb_playground import CBPlayground
 from resources.hybrid_playground import HybridPlayground
+from resources.search_playground import SearchPlayground
 
 from cli.train import train_models
 
@@ -38,6 +39,7 @@ def create_app():
     api.add_resource(CBFPlayground, '/users-playground/<int:user_id>')
     api.add_resource(CBPlayground, '/movies-playground/<int:movie_id>')
     api.add_resource(HybridPlayground, '/hybrid-playground/<int:user_id>/<int:movie_id>')
+    api.add_resource(SearchPlayground, '/search-playground/<int:user_id>')
 
     @app.cli.command()
     def train():
