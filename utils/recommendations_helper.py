@@ -169,3 +169,13 @@ class RecommendationsHelper:
         data = sorted(recommendations, key=lambda x: [x[key] for key in keys if key in x],
                       reverse=True)
         return data
+
+    @staticmethod
+    def filter_not_fav_genres(ratings, not_fav_genres):
+        genres_ids = not_fav_genres.split(',')
+        genres_items = DatabaseHelper.get_movies_for_genres(genres_ids)
+
+        if len(genres_items) > 0:
+            ratings = [item for item in ratings if int(item[0]) not in genres_items]
+
+        return ratings

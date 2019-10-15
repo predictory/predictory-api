@@ -16,15 +16,19 @@ class CBFPlayground(Resource):
         skip = request.args.get('skip', 0, int)
         order_by = request.args.get('order_by', 'rating,es_score')
         order_by = order_by.split(',')
+        fav_genres = request.args.get('fav_genres')
+        not_fav_genres = request.args.get('not_fav_genres')
 
         if rec_type == 'item-based':
             recommendations = CBFRecommender.get_recommendations_item_based(user_id, take, skip, genres, movie_type,
-                                                                            sim_type, sim_source, order_by)
+                                                                            sim_type, sim_source, order_by, fav_genres,
+                                                                            not_fav_genres)
         elif rec_type == 'user-based':
             recommendations = CBFRecommender.get_recommendations_user_based(user_id, take, skip, genres, movie_type,
-                                                                            sim_type, sim_source, order_by)
+                                                                            sim_type, sim_source, order_by, fav_genres,
+                                                                            not_fav_genres)
         else:
             recommendations = CBFRecommender.get_recommendations(user_id, take, skip, genres, movie_type, sim_source,
-                                                                 order_by)
+                                                                 order_by, fav_genres, not_fav_genres)
 
         return recommendations, 200

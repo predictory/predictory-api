@@ -40,3 +40,16 @@ class DatabaseHelper:
             return genre_movies
 
         return [movie[0] for movie in genre_movies]
+
+    @staticmethod
+    def get_movies_for_genres(genres_ids):
+        genre_movies = db.session.query(MovieModel.id).join(MovieModel.genres)
+
+        genre_movies = genre_movies.filter(GenreModel.id.in_(genres_ids)) \
+            .group_by(MovieModel.id) \
+            .all()
+
+        if len(genre_movies) == 0:
+            return genre_movies
+
+        return [movie[0] for movie in genre_movies]
