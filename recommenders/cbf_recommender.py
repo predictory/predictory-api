@@ -22,6 +22,8 @@ class CBFRecommender:
         if not_fav_genres is not None:
             ratings = RecommendationsHelper.filter_not_fav_genres(ratings, not_fav_genres)
             num_of_ratings = len(ratings)
+        if fav_genres is not None:
+            ratings = RecommendationsHelper.favor_fav_genres(ratings, fav_genres)
 
         recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
                                                       sim_source, order_by)
@@ -80,6 +82,8 @@ class CBFRecommender:
         if not_fav_genres is not None:
             ratings = RecommendationsHelper.filter_not_fav_genres(ratings, not_fav_genres)
             num_of_ratings = len(ratings)
+        if fav_genres is not None:
+            ratings = RecommendationsHelper.favor_fav_genres(ratings, fav_genres)
 
         recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
                                                       sim_source, order_by)
@@ -104,6 +108,8 @@ class CBFRecommender:
         if not_fav_genres is not None:
             ratings = RecommendationsHelper.filter_not_fav_genres(ratings, not_fav_genres)
             num_of_ratings = len(ratings)
+        if fav_genres is not None:
+            ratings = RecommendationsHelper.favor_fav_genres(ratings, fav_genres)
 
         recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
                                                       sim_source, order_by)
