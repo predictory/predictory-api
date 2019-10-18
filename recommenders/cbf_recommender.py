@@ -19,11 +19,7 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id)
 
-        if not_fav_genres is not None:
-            ratings = RecommendationsHelper.filter_not_fav_genres(ratings, not_fav_genres)
-            num_of_ratings = len(ratings)
-        if fav_genres is not None:
-            ratings = RecommendationsHelper.favor_fav_genres(ratings, fav_genres)
+        ratings, num_of_ratings = RecommendationsHelper.process_genres(ratings, fav_genres, not_fav_genres)
 
         recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
                                                       sim_source, order_by)
@@ -79,11 +75,7 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id, sim_type)
 
-        if not_fav_genres is not None:
-            ratings = RecommendationsHelper.filter_not_fav_genres(ratings, not_fav_genres)
-            num_of_ratings = len(ratings)
-        if fav_genres is not None:
-            ratings = RecommendationsHelper.favor_fav_genres(ratings, fav_genres)
+        ratings, num_of_ratings = RecommendationsHelper.process_genres(ratings, fav_genres, not_fav_genres)
 
         recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
                                                       sim_source, order_by)
@@ -105,11 +97,7 @@ class CBFRecommender:
         else:
             num_of_rated_items, num_of_ratings, ratings = recommender.recommend(user_id, sim_type)
 
-        if not_fav_genres is not None:
-            ratings = RecommendationsHelper.filter_not_fav_genres(ratings, not_fav_genres)
-            num_of_ratings = len(ratings)
-        if fav_genres is not None:
-            ratings = RecommendationsHelper.favor_fav_genres(ratings, fav_genres)
+        ratings, num_of_ratings = RecommendationsHelper.process_genres(ratings, fav_genres, not_fav_genres)
 
         recommendations = DataHelper.prepare_cbf_data(user_id, num_of_rated_items, ratings, take, skip, genres,
                                                       sim_source, order_by)

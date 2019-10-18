@@ -189,3 +189,13 @@ class RecommendationsHelper:
             ratings = [(item[0], item[1] * 1.5 if int(item[0]) in genres_items else item[1]) for item in ratings]
 
         return ratings
+
+    @staticmethod
+    def process_genres(ratings, fav_genres, not_fav_genres):
+        if not_fav_genres is not None:
+            ratings = RecommendationsHelper.filter_not_fav_genres(ratings, not_fav_genres)
+        if fav_genres is not None:
+            ratings = RecommendationsHelper.favor_fav_genres(ratings, fav_genres)
+        num_of_ratings = len(ratings)
+
+        return ratings, num_of_ratings
