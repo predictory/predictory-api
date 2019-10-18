@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
@@ -25,7 +26,6 @@ class RecommendationsHelper:
 
         rated_movies = RecommendationsHelper.get_user_rated_movies(user_id)
         rated_movies = [item['movieId'] for item in rated_movies]
-        movies_similarities = dict()
 
         if genres is not None:
             genres_ids = genres.split(',')
@@ -39,17 +39,14 @@ class RecommendationsHelper:
 
             rated_movies = [movie[0] for movie in movies]
 
-        for key, value in ratings.items():
-            similarities = mongo_similarities.find_one({'id': int(key)})
-            similarities = similarities['similarities']
-            similar_items = [item for item in similarities if item['id'] in rated_movies]
-            similarity = 0
-            if len(similar_items) > 0:
-                for item in similar_items:
-                    if item['similarity'] > similarity:
-                        similarity = item['similarity']
-
-            movies_similarities[key] = similarity
+        keys = [int(key) for key, value in ratings.items()]
+        similarities = mongo_similarities.find({'id': {'$in': keys}})
+        similarities = [(
+            similarity['id'], [item['similarity'] for item in similarity['similarities'] if item['id'] in rated_movies]
+        ) for similarity in similarities]
+        movies_similarities = {
+            str(similarity[0]): max(similarity[1]) if len(similarity[1]) > 0 else 0 for similarity in similarities
+        }
 
         return movies_similarities
 
