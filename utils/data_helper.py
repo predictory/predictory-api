@@ -12,6 +12,7 @@ class DataHelper:
             recommendations = RecommendationsHelper.get_recommendations(ratings, pre_take, skip, user_id, genres,
                                                                         sim_source)
             recommendations = ExpertSystem.get_scores(user_id, recommendations)
+            recommendations = RecommendationsHelper.compute_augmented_rating(recommendations)
             recommendations = RecommendationsHelper.sort(recommendations, order_by)
             recommendations = recommendations[:take]
         else:
