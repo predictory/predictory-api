@@ -19,6 +19,8 @@ class RecommendationsHelper:
 
     @staticmethod
     def get_similarity_values(user_id, ratings, genres=None, sim_source='tf-idf'):
+        start = time.time()
+
         if sim_source == 'lda':
             mongo_similarities = mongo.db.similarities
         else:
@@ -47,6 +49,9 @@ class RecommendationsHelper:
         movies_similarities = {
             str(similarity[0]): max(similarity[1]) if len(similarity[1]) > 0 else 0 for similarity in similarities
         }
+
+        end = time.time()
+        print(f'Similarity computed in: {end - start}s')
 
         return movies_similarities
 

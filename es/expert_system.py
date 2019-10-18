@@ -31,9 +31,13 @@ class ExpertSystem:
                 shell=True)
 
         output_data = ExpertSystem.get_output_data(output_file)
+        end = time.time()
+        print(f'Expert system scores computed in: {end - now}s')
         for i, value in enumerate(output_data):
             data[i]['es_score'] = value
         ExpertSystem.delete_files(input_file, output_file)
+        end = time.time()
+        print(f'Expert system finished in: {end - now}s')
 
         return data
 
