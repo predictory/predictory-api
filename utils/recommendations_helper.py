@@ -188,7 +188,7 @@ class RecommendationsHelper:
         genres_items = DatabaseHelper.get_movies_for_genres(genres_ids)
 
         if len(genres_items) > 0:
-            ratings = [(item[0], item[1] * 1.5 if int(item[0]) in genres_items else item[1]) for item in ratings]
+            ratings = [(item[0], item[1] * 2 if int(item[0]) in genres_items else item[1]) for item in ratings]
 
         return ratings
 
