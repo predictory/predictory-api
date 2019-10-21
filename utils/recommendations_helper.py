@@ -173,6 +173,10 @@ class RecommendationsHelper:
         return data
 
     @staticmethod
+    def sort_ratings(ratings):
+        return sorted(ratings, key=lambda x: x[1], reverse=True)
+
+    @staticmethod
     def filter_not_fav_genres(ratings, not_fav_genres):
         genres_ids = not_fav_genres.split(',')
         genres_items = DatabaseHelper.get_movies_for_genres(genres_ids)

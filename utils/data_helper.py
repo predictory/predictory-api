@@ -7,9 +7,12 @@ class DataHelper:
     @staticmethod
     def prepare_cbf_data(user_id, num_of_rated_items, ratings, take=10, skip=0, genres=None, sim_source='tf-idf',
                          order_by=['rating', 'es_score']):
-        pre_take = take * 3 if order_by == ['rating', 'es_score']\
-                               or order_by == ['rating']\
-                               or order_by == ['augmented_rating'] else -1
+        pre_take = -1
+        if order_by == ['rating', 'es_score'] or order_by == ['rating'] or order_by == ['augmented_rating']:
+            print(f'Ordered by {", ".join(order_by)}')
+            ratings = RecommendationsHelper.sort_ratings(ratings)
+            pre_take = take * 3
+
         if ratings is not None and num_of_rated_items > 0:
             recommendations = RecommendationsHelper.get_recommendations(ratings, pre_take, skip, user_id, genres,
                                                                         sim_source)
