@@ -60,7 +60,7 @@ class RecommendationsHelper:
         return [{
             'id': key,
             'rating': float(value),
-            'similarity': similarities[key],
+            'similarity': similarities[str(key)],
             'average_rating': stats[int(key)]['average_rating'],
             'ratings_count': stats[int(key)]['count'],
             'penalized': stats[int(key)]['penalized'],
