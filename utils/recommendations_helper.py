@@ -209,5 +209,5 @@ class RecommendationsHelper:
     @staticmethod
     def compute_augmented_rating(recommendations):
         for row in recommendations:
-            row['augmented_rating'] = row['rating'] * (1 + row['es_score']) if row['rating'] > 0 else row['es_score']
+            row['augmented_rating'] = row['rating'] * ((1 + row['es_score']) if row['rating'] > 0 else row['es_score'])
         return recommendations
