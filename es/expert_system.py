@@ -51,19 +51,19 @@ class ExpertSystem:
 
     @staticmethod
     def create_input_file(input_file_path, data):
-        # input_headers = 'INP1\tINP2\tINP3\tINP4\n'
-        input_headers = 'INP1\tINP2\tINP3\n'
+        input_headers = 'INP1\tINP2\tINP3\tINP4\n'
+        # input_headers = 'INP1\tINP2\tINP3\n'
         f = open(input_file_path, 'w')
         f.write(input_headers)
         for row in data:
             inp = [
                 str(row['average_rating']).replace('.', ','),
                 str(row['ratings_count']).replace('.', ','),
-                # str(row['penalized']).replace('.', ','),
+                str(row['penalized']).replace('.', ','),
                 str(row['similarity']).replace('.', ',')
             ]
-            # input_row = f'{inp[0]}\t{inp[1]}\t{inp[2]}\t{inp[3]}\n'
-            input_row = f'{inp[0]}\t{inp[1]}\t{inp[2]}\n'
+            input_row = f'{inp[0]}\t{inp[1]}\t{inp[2]}\t{inp[3]}\n'
+            # input_row = f'{inp[0]}\t{inp[1]}\t{inp[2]}\n'
             f.write(input_row)
         f.close()
 
