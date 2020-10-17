@@ -27,7 +27,7 @@ class ExpertSystem:
             subprocess.call(f'.\es\hierarchic_base.exe -k {knb} -i {input_file} -o {output_file}')
         else:
             subprocess.call(
-                f'/opt/wine-stable/bin/wine ./es/hierarchic_base.exe -k {knb} -i {input_file} -o {output_file}',
+                f'/usr/bin/wine-stable ./es/hierarchic_base.exe -k {knb} -i {input_file} -o {output_file}',
                 shell=True)
 
         output_data = ExpertSystem.get_output_data(output_file)
