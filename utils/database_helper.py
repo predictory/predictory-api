@@ -65,7 +65,7 @@ class DatabaseHelper:
         for line in data.itertuples():
             data_matrix.at[line.userId, line.movieId] = line.rating
 
-        return csr_matrix(data_matrix, dtype=np.float32), movies, users
+        return csr_matrix(data_matrix, dtype=np.float32), movies, users, most_valued_genres, least_valued_genres
 
     @staticmethod
     def get_movies_by_genres_and_type(genres_ids, movie_type):

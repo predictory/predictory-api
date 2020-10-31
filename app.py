@@ -12,6 +12,7 @@ from resources.user_retrain_new import UserRetrainNew
 from resources.retrain import Retrain
 from resources.search import Search
 from resources.similarity_distribution import SimilarityDistribution
+from resources.playground_new import PlaygroundNew
 
 from cli.train import train_models
 
@@ -30,6 +31,7 @@ def create_app():
     api.add_resource(SimilarityDistribution, '/movies/similarities-distribution')
     api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
     api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
+    api.add_resource(PlaygroundNew, '/playground/users/<int:user_id>/recommendations')
     api.add_resource(UserRetrain, '/train/users/<int:user_id>')
     api.add_resource(UserRetrainNew, '/train-new/users/<int:user_id>')
     api.add_resource(Retrain, '/train')
