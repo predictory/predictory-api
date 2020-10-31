@@ -48,6 +48,13 @@ class SVDModel:
         mapping_file.close()
 
     @staticmethod
+    def _save_pickle_file_new(file_name, data):
+        file_name = f'./models/SVD_new/{file_name}.pickle'
+        mapping_file = open(file_name, 'wb')
+        pickle.dump(data, mapping_file)
+        mapping_file.close()
+
+    @staticmethod
     def save(U, sigma, Vt):
         if not os.path.exists('./models/SVD'):
             os.makedirs('./models/SVD')
@@ -55,6 +62,15 @@ class SVDModel:
         SVDModel._save_pickle_file('u', U)
         SVDModel._save_pickle_file('sigma', sigma)
         SVDModel._save_pickle_file('vt', Vt)
+
+    @staticmethod
+    def save_new(U, sigma, Vt):
+        if not os.path.exists('./models/SVD_new'):
+            os.makedirs('./models/SVD_new')
+
+        SVDModel._save_pickle_file_new('u', U)
+        SVDModel._save_pickle_file_new('sigma', sigma)
+        SVDModel._save_pickle_file_new('vt', Vt)
 
     @staticmethod
     def save_ratings(ratings_df):
@@ -67,6 +83,27 @@ class SVDModel:
     @staticmethod
     def save_rating(user_id, ratings):
         mongo_ratings = mongo.db.users_ratings
+        mongo_ratings.delete_many({'id': int(user_id)})
+        ratings = json.dumps(ratings)
+
+        ratings_row = {
+            'id': user_id,
+            'ratings': json.loads(ratings)
+        }
+
+        mongo_ratings.insert_one(ratings_row)
+
+    @staticmethod
+    def save_ratings_new(ratings_df):
+        mongo_ratings = mongo.db.users_ratings_new
+        mongo_ratings.delete_many({})
+
+        for index, row in ratings_df.iterrows():
+            SVDModel.save_rating_new(index, row.to_dict())
+
+    @staticmethod
+    def save_rating_new(user_id, ratings):
+        mongo_ratings = mongo.db.users_ratings_new
         mongo_ratings.delete_many({'id': int(user_id)})
         ratings = json.dumps(ratings)
 

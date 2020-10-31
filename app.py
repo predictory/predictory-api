@@ -8,13 +8,10 @@ from resources.movie import Movie
 from resources.movie_recommendation import MovieRecommendation
 from resources.user_recommendation import UserRecommendation
 from resources.user_retrain import UserRetrain
+from resources.user_retrain_new import UserRetrainNew
 from resources.retrain import Retrain
 from resources.search import Search
 from resources.similarity_distribution import SimilarityDistribution
-from resources.cbf_playground import CBFPlayground
-from resources.cb_playground import CBPlayground
-from resources.hybrid_playground import HybridPlayground
-from resources.search_playground import SearchPlayground
 
 from cli.train import train_models
 
@@ -34,12 +31,9 @@ def create_app():
     api.add_resource(MovieRecommendation, '/movies/<int:movie_id>/recommendations')
     api.add_resource(UserRecommendation, '/users/<int:user_id>/recommendations')
     api.add_resource(UserRetrain, '/train/users/<int:user_id>')
+    api.add_resource(UserRetrainNew, '/train-new/users/<int:user_id>')
     api.add_resource(Retrain, '/train')
     api.add_resource(Search, '/search/<int:user_id>')
-    api.add_resource(CBFPlayground, '/users-playground/<int:user_id>')
-    api.add_resource(CBPlayground, '/movies-playground/<int:movie_id>')
-    api.add_resource(HybridPlayground, '/hybrid-playground/<int:user_id>/<int:movie_id>')
-    api.add_resource(SearchPlayground, '/search-playground/<int:user_id>')
 
     @app.cli.command()
     def train():
