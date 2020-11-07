@@ -24,11 +24,16 @@ class PlaygroundNew(Resource):
                     del recommendations[movie['movieId']]
                 except:
                     print('Movie not found')
-            recommendations = [{'id': k, 'rating': v} for k, v in sorted(recommendations.items(), key=lambda item: item[1], reverse=True)]
 
-            # boost rating for items from favourite genres
+            # increase rating for fav genres and decrease for not fav genres
+            recommendations = RecommendationsHelper.process_genres_increase_decrease_rating(recommendations, fav_genres, not_fav_genres)
+
             # boost rating for 5 top items from genre
-            # reduce rating for items from not favourites genres
+
+            recommendations = RecommendationsHelper.process_genres_increase_top_movies_rating(recommendations, fav_genres)
+
+            recommendations = [{'id': k, 'rating': v} for k, v in
+                               sorted(recommendations.items(), key=lambda item: item[1], reverse=True)]
 
             return recommendations[skip:take], 200
         else:

@@ -51,3 +51,5 @@ class MovieModel(db.Model):
     production = db.Column(db.String(100))
     ratings = db.relationship('RatingModel', lazy='subquery',
                               backref=db.backref('ratings', lazy=True))
+    users_ratings = db.relationship('UserRatingModel', lazy='subquery',
+                              backref=db.backref('users_ratings', lazy=True))

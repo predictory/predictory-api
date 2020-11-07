@@ -207,6 +207,41 @@ class RecommendationsHelper:
         return ratings, num_of_ratings
 
     @staticmethod
+    def process_genres_increase_decrease_rating(ratings, fav_genres, not_fav_genres):
+        fav_coefficient = .3
+        not_fav_coefficient = 0.5
+
+        ids = ratings.keys()
+        movies_with_genres = DatabaseHelper.get_movies_genres(ids)
+        for row in movies_with_genres:
+            genres = [genre.id for genre in row.genres]
+
+            intersection = list(set(fav_genres) & set(genres))
+            if len(intersection):
+                ratings[row.id] = ratings[row.id] * (1 + fav_coefficient) if ratings[row.id] > 0 else ratings[row.id] * fav_coefficient
+
+            intersection = list(set(not_fav_genres) & set(genres))
+            if len(intersection):
+                ratings[row.id] = ratings[row.id] * not_fav_coefficient if ratings[row.id] > 0 else ratings[row.id] * (1 + not_fav_coefficient)
+
+        return ratings
+
+    @staticmethod
+    def process_genres_increase_top_movies_rating(ratings, fav_genres):
+        increase_coefficient = .1
+
+        for row in fav_genres:
+            top_movies = DatabaseHelper.get_top_movies_for_genre(row)
+
+            for top_movie in top_movies:
+                if top_movie in ratings:
+                    ratings[top_movie] = ratings[top_movie] * (1 + increase_coefficient) if ratings[top_movie] > 0 else ratings[top_movie] * increase_coefficient
+                else:
+                    print('Movie %s not in list' % top_movie)
+
+        return ratings
+
+    @staticmethod
     def compute_augmented_rating(recommendations):
         for row in recommendations:
             row['augmented_rating'] = row['rating'] * ((1 + row['es_score']) if row['rating'] > 0 else row['es_score'])
