@@ -254,6 +254,24 @@ class RecommendationsHelper:
         return ratings
 
     @staticmethod
+    def process_genres_increase_decrease_by_avg_rating(ratings):
+        min_num_of_ratings = 75
+        inc_dec_val = 1
+        high_rating = 4
+        low_rating = 2
+
+        movies_stats = DatabaseHelper.get_movies_avg_rating(ratings.keys())
+
+        for mId, count, val in movies_stats:
+            if count >= min_num_of_ratings:
+                if (val / count) >= high_rating:
+                    ratings[mId] += inc_dec_val
+                elif (val / count) <= low_rating:
+                    ratings[mId] -= inc_dec_val
+
+        return ratings
+
+    @staticmethod
     def compute_augmented_rating(recommendations):
         for row in recommendations:
             row['augmented_rating'] = row['rating'] * ((1 + row['es_score']) if row['rating'] > 0 else row['es_score'])

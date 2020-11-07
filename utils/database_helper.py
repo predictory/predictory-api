@@ -72,6 +72,13 @@ class DatabaseHelper:
         return db.session.query(MovieModel).join(MovieModel.genres).filter(MovieModel.id.in_(ids)).all()
 
     @staticmethod
+    def get_movies_avg_rating(ids):
+        return db.session.query(MovieModel.id, func.count(UserRatingModel.id), func.sum(UserRatingModel.rating))\
+            .join(MovieModel.users_ratings)\
+            .filter(MovieModel.id.in_(ids))\
+            .group_by(MovieModel.id).all()
+
+    @staticmethod
     def get_top_movies_for_genre(genre):
         top_movies = db.session.query(MovieModel.id, func.count(UserRatingModel.id).label('cnt'))\
             .join(MovieModel.genres) \

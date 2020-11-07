@@ -29,15 +29,18 @@ class PlaygroundNew(Resource):
             recommendations = RecommendationsHelper.process_genres_increase_decrease_rating(recommendations, fav_genres, not_fav_genres)
 
             # boost rating for 5 top items from genre
-
             recommendations = RecommendationsHelper.process_genres_increase_top_movies_rating(recommendations, fav_genres)
 
             users = users.tolist()
             users.remove(user_id)
+
             recommendations = RecommendationsHelper.process_genres_increase_for_part_of_group(recommendations, users)
 
-            recommendations = [{'id': k, 'rating': v} for k, v in
-                               sorted(recommendations.items(), key=lambda item: item[1], reverse=True)]
+            recommendations = RecommendationsHelper.process_genres_increase_decrease_by_avg_rating(recommendations)
+
+            user_similarities = RecommendationsHelper.get_similarity_values(user_id, recommendations)
+
+            recommendations = [{'id': k, 'rating': v, 'similarity': user_similarities[str(k)]} for k, v in sorted(recommendations.items(), key=lambda item: item[1], reverse=True)]
 
             return recommendations[skip:take], 200
         else:
