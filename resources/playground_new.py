@@ -32,6 +32,10 @@ class PlaygroundNew(Resource):
 
             recommendations = RecommendationsHelper.process_genres_increase_top_movies_rating(recommendations, fav_genres)
 
+            users = users.tolist()
+            users.remove(user_id)
+            recommendations = RecommendationsHelper.process_genres_increase_for_part_of_group(recommendations, users)
+
             recommendations = [{'id': k, 'rating': v} for k, v in
                                sorted(recommendations.items(), key=lambda item: item[1], reverse=True)]
 

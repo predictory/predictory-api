@@ -84,6 +84,16 @@ class DatabaseHelper:
         return [mId for mId, mV in top_movies]
 
     @staticmethod
+    def get_movies_rated_by_part_group(users):
+        movies = db.session.query(MovieModel.id) \
+            .join(MovieModel.users_ratings) \
+            .filter(UserRatingModel.userId.in_(users)) \
+            .group_by(MovieModel.id) \
+            .having(func.count(UserRatingModel.id) >= round(len(users) / 4) if len(users) > 0 else 0).all()
+
+        return [mId for mId, in movies]
+
+    @staticmethod
     def get_movies_by_genres_and_type(genres_ids, movie_type):
         genre_movies = db.session.query(MovieModel.id).join(MovieModel.genres)
 

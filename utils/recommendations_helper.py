@@ -242,6 +242,18 @@ class RecommendationsHelper:
         return ratings
 
     @staticmethod
+    def process_genres_increase_for_part_of_group(ratings, users):
+        increase_coefficient = .2
+
+        movies_to_increase = DatabaseHelper.get_movies_rated_by_part_group(users)
+
+        for movie in movies_to_increase:
+            if movie in ratings:
+                ratings[movie] = ratings[movie] * (1 + increase_coefficient) if ratings[movie] > 0 else ratings[movie] * increase_coefficient
+
+        return ratings
+
+    @staticmethod
     def compute_augmented_rating(recommendations):
         for row in recommendations:
             row['augmented_rating'] = row['rating'] * ((1 + row['es_score']) if row['rating'] > 0 else row['es_score'])
