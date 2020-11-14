@@ -27,7 +27,7 @@ class DatabaseHelper:
         return csr_matrix(data_matrix, dtype=np.float32), movies, users
 
     @staticmethod
-    def load_data_matrix_limited_by_top_genres(user_id):
+    def load_data_matrix_limited_by_top_genres(user_id, compare_to=None):
         user_top_genres = db.session.query(TopGenre)\
             .filter_by(userId=user_id)\
             .filter(db.or_(TopGenre.genreType==TopGenreType.MOST_RATED.value, TopGenre.genreType==TopGenreType.LEAST_RATED.value))\
@@ -36,22 +36,27 @@ class DatabaseHelper:
         most_genres = [row.genreId for row in user_top_genres if row.genreType == TopGenreType.MOST_RATED.value]
         least_genres = [row.genreId for row in user_top_genres if row.genreType == TopGenreType.LEAST_RATED.value]
 
-        similar_users_most_valued = db.session.query(TopGenre.userId)\
-            .filter(TopGenre.genreId.in_(most_genres))\
-            .filter(TopGenre.genreType == TopGenreType.MOST_RATED.value)\
-            .filter(TopGenre.genreLimit == LimitType.TOP_THREE.value) \
-            .group_by(TopGenre.userId) \
-            .having(func.count(TopGenre.userId) == 3).all()
-        most_ids = [value for value, in similar_users_most_valued]
-        similar_users_least_valued = db.session.query(TopGenre.userId) \
-            .filter(TopGenre.genreId.in_(least_genres)) \
-            .filter(TopGenre.genreType == TopGenreType.LEAST_RATED.value) \
-            .filter(TopGenre.genreLimit == LimitType.TOP_THREE.value) \
-            .group_by(TopGenre.userId) \
-            .having(func.count(TopGenre.userId) >= 2).all()
-        least_ids = [value for value, in similar_users_least_valued]
+        if compare_to is None:
+            print('Automatic similar users')
+            similar_users_most = db.session.query(TopGenre.userId)\
+                .filter(TopGenre.genreId.in_(most_genres))\
+                .filter(TopGenre.genreType == TopGenreType.MOST_RATED.value)\
+                .filter(TopGenre.genreLimit == LimitType.TOP_THREE.value) \
+                .group_by(TopGenre.userId) \
+                .having(func.count(TopGenre.userId) == 3).all()
+            most_ids = [value for value, in similar_users_most]
+            similar_users_least = db.session.query(TopGenre.userId) \
+                .filter(TopGenre.genreId.in_(least_genres)) \
+                .filter(TopGenre.genreType == TopGenreType.LEAST_RATED.value) \
+                .filter(TopGenre.genreLimit == LimitType.TOP_THREE.value) \
+                .group_by(TopGenre.userId) \
+                .having(func.count(TopGenre.userId) >= 2).all()
+            least_ids = [value for value, in similar_users_least]
 
-        intersection = list(set(most_ids) & set(least_ids))
+            intersection = list(set(most_ids) & set(least_ids))
+        else:
+            print('Manual entries')
+            intersection = compare_to
 
         users_ratings = db.session.query(UserRatingModel).filter(UserRatingModel.userId.in_(intersection)).all()
         users_ratings = [row.__dict__ for row in users_ratings]
