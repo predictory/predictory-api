@@ -130,7 +130,7 @@ class DatabaseHelper:
                     data_matrix.at[line.userId, line.movieId] = line.rating * (1 + float(boosting_favourite_coeficient.value))
                 elif line.movieId in movies_with_least_genre:
                     print(f'Lowering for {line.userId} and {line.movieId}')
-                    data_matrix.at[line.userId, line.movieId] = line.rating * (1 - float(boosting_not_favourite_coeficient.value))
+                    data_matrix.at[line.userId, line.movieId] = line.rating * float(boosting_not_favourite_coeficient.value)
                 else:
                     data_matrix.at[line.userId, line.movieId] = line.rating
             else:
