@@ -5,6 +5,7 @@ from db import db
 from models.user_rating import UserRatingModel
 from models.movie import MovieModel
 from models.genre import GenreModel
+from models.setting import SettingModel
 from models.top_genre import TopGenre, TopGenreType, LimitType
 from sqlalchemy import func
 
@@ -73,8 +74,9 @@ class DatabaseHelper:
         return csr_matrix(data_matrix, dtype=np.float32), movies, users, most_genres, least_genres
 
     @staticmethod
-    def load_data_matrix_and_top_genres(user_id, compare_to = None):
-        multiplicator = .5
+    def load_data_matrix_and_top_genres(user_id, compare_to=None):
+        boosting_favourite_coeficient = db.session.query(SettingModel).filter_by(name='boosting_favourite').one()
+        boosting_not_favourite_coeficient = db.session.query(SettingModel).filter_by(name='boosting_not_favourite').one()
         user_top_genres = db.session.query(TopGenre) \
             .filter_by(userId=user_id) \
             .filter(db.or_(TopGenre.genreType == TopGenreType.MOST_RATED.value,
@@ -125,10 +127,10 @@ class DatabaseHelper:
             if line.userId in intersection and line.userId is not user_id:
                 if line.movieId in movies_with_most_genre:
                     print(f'Boosting for {line.userId} and {line.movieId}')
-                    data_matrix.at[line.userId, line.movieId] = line.rating * (1 + multiplicator)
+                    data_matrix.at[line.userId, line.movieId] = line.rating * (1 + float(boosting_favourite_coeficient.value))
                 elif line.movieId in movies_with_least_genre:
                     print(f'Lowering for {line.userId} and {line.movieId}')
-                    data_matrix.at[line.userId, line.movieId] = line.rating * (1 - multiplicator)
+                    data_matrix.at[line.userId, line.movieId] = line.rating * (1 - float(boosting_not_favourite_coeficient.value))
                 else:
                     data_matrix.at[line.userId, line.movieId] = line.rating
             else:
